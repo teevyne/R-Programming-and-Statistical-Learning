@@ -1,0 +1,112 @@
+---
+title: "NewProject"
+author: "Tolu"
+date: "7/17/2020"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(tidyverse)
+dta<-read_excel("data/mbta.xlsx",skip = 1, range = cell_cols(2:60))
+View(dta)
+```
+
+```{r}
+dta_tidy <- dta %>% gather(`2007-01`:`2011-10`, key = "year", value = "passengers")
+View(dta_tidy)
+```
+
+```{r}
+dta_tidy <- dta_tidy %>% separate(year, into = c("year", "month"))
+View(dta_tidy)
+```
+
+```{r}
+dta_tidy <- dta_tidy %>% spread(mode, passengers)
+dta_tidy
+```
+
+```{r}
+dta_tidy <- dta_tidy %>% .[,c(1:2,6:8)]
+dta_tidy
+```
+
+```{r}
+dta_tidy <- dta_tidy %>% gather(`Commuter Rail`:`Light Rail`,key="rail_type", value = passengers)
+dta_tidy
+```
+
+```{r}
+library(hflights)
+data(hflights)
+View(hflights)
+```
+
+```{r}
+library(hflights)
+data("hflights")
+filter(hflights, Year == 2011, Month == 2)
+```
+
+```{r}
+fil<-filter(hflights, Dest %in% c("FLL", "LAS"))
+(fil)
+```
+
+```{r}
+filout <- filter(hflights, between(Distance, 224,944))[,11:16]
+(filout)
+```
+
+```{r}
+departed <- filter(hflights, Year == 2011, Month == 4)
+(departed)
+```
+
+```{r}
+operations <- filter(departed, UniqueCarrier %in% c("AA", "WN"))
+(operations)
+```
+
+```{r}
+arr1 <- arrange(hflights, Year, Month)
+View(arr1)
+```
+
+```{r}
+arr2 <- arrange(hflights, desc(ArrDelay))
+arr2
+```
+
+```{r}
+select(hflights, Year, Month, FlightNum, AirTime)[1:4,]
+```
+
+```{r}
+library(dplyr)
+vars <- c("Year", "Month", "DayofMonth", "DayofMonth", "ArrTime")
+s_1<-select(hflights, one_of(vars))
+head(s_1)[1:6,]
+```
+
+```{r}
+hflights %>% select(ends_with("Delay"), Distance, AirTime) %>% mutate(time_gain = ArrDelay - DepDelay, speed = Distance / AirTime * 60)
+```
+
+```{r}
+summarise(hflights, Delay = sum(DepDelay, na.rm = TRUE))
+```
+
+```{r}
+aveDelay <- hflights %>% group_by(Year, Month, DayofMonth) %>% summarise(delay = mean(DepDelay, na.rm = TRUE))
+View(aveDelay)
+```
+
+```{r}
+hflights %>% group_by(Year, Month, DayofMonth) %>% summarise(DepDelay =n())
+```
+
+```{r}
+
+```

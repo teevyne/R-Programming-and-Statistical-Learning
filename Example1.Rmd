@@ -1,0 +1,21 @@
+---
+title: "ClassWork"
+author: "Tolu"
+date: "7/17/2020"
+output: html_document
+---
+
+```{r}
+myData <- read.csv("C:\\Users\\user\\Downloads\\Cold_Storage_Temp_Data.csv")
+View(myData)
+```
+
+```{r}
+library(magrittr)
+library(dplyr)
+myNewData <- myData %>% group_by(Season)
+```
+
+```{r}
+myNewData%>%summarise(Mean_Temp = mean(Temperature, na.rm = T))
+```

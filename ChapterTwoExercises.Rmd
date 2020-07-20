@@ -1,0 +1,102 @@
+---
+title: "ClassThree"
+author: "Tolu"
+date: "7/20/2020"
+output: html_document
+---
+
+```{r}
+college <- read.csv("C:\\Users\\user\\Downloads\\College.csv")
+fix(college)
+rownames(college) <- college[,1]
+fix(college)
+college <- college[,-1]
+fix(college)
+```
+
+```{r}
+library(dplyr)
+summary(college)
+```
+
+```{r}
+glimpse(college)
+```
+
+```{r}
+library(graphics)
+#pairs(college[ ,1:10])
+pairs(college[1:10])
+```
+
+```{r}
+auto <- read.table("C:\\Users\\user\\Downloads\\Auto.data")
+fix(auto)
+```
+
+```{r}
+library(ISLR)
+?ISLR::Auto
+```
+
+```{r}
+auto_range <- data.frame(sapply(Auto[,1:7], range))
+rownames(auto_range) <- c("min: ", "max: ")
+auto_range
+```
+
+```{r}
+the_mean <- sapply(Auto[,1:7], mean)
+the_stdv <- sapply(Auto[,1:7], sd)
+the_mean
+the_stdv
+```
+
+```{r}
+pairs(Auto[ ,1:7])
+```
+
+```{r}
+new_auto <- Auto[-c(10, 85), ]
+new_auto
+```
+
+```{r}
+reduced_mean <- sapply(new_auto, mean)
+reduced_sd <- sapply(new_auto, sd)
+
+reduced_mean
+reduced_sd
+
+```
+
+```{r}
+library(MASS)
+```
+
+```{r}
+View(Boston)
+```
+
+```{r}
+new_range <- data.frame(sapply(new_auto[,1:7], range))
+rownames(new_range) <- c("min: ", "max: ")
+new_range
+
+```
+
+
+```{r}
+library(ggplot2)
+Auto$origin <- factor(Auto$origin, labels = c("American", "European", "Japanese"))
+
+ggplot(Auto, aes(x = weight, y = acceleration)) + geom_point() + theme(legend.position = "none") + scale_x_continuous(labels = scales::comma_format()) + labs(x = "Weight", y = "Acceleration", title = "Correlation between weight and acceleration")
+```
+
+
+```{r}
+library(MASS)
+dim(Boston)
+```
+
+#https://rpubs.com/lmorgan95/ISLR_CH2_Solutions 

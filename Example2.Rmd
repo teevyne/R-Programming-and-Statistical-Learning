@@ -1,0 +1,104 @@
+---
+title: "Examples"
+author: "Tolu"
+date: "7/17/2020"
+output: html_document
+---
+
+```{r}
+help(mean)
+?mean
+```
+
+
+```{r}
+height <- 10
+Height <- 20
+
+height
+Height
+```
+
+```{r}
+x <- 14
+print(x)
+```
+
+```{r}
+msg = "hello"
+print(msg)
+```
+
+```{r}
+x <- seq(1, 10, by = 2)
+print(x)
+```
+
+```{r}
+x <- 0:6
+print(x)
+as.character(x)
+as.logical(x)
+class(x)
+```
+
+```{r}
+x <- matrix(nrow = 2, ncol = 4)
+x
+dim(x)
+attributes(x)
+```
+
+```{r}
+y <- matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
+y
+```
+
+
+```{r}
+a <- 1:10
+dim(a) <- c(2, 5)
+a
+```
+
+```{r}
+x <- 4:6
+y <- 1:3
+cbind(x, y)
+rbind(x, y)
+```
+
+```{r}
+x <- 1:4
+y <- 5:8
+a <- cbind(x, y)
+b <- rbind(x, y)
+x
+y
+a
+b
+colnames(a) <- x
+rownames(b) <- y
+# did not work o
+```
+
+```{r}
+m <- list(50, "b", TRUE, 1 + 4i)
+m
+```
+
+```{r}
+x <- list(a = 1, b = "c", c = 3)
+x
+```
+
+```{r}
+x <- factor(c("yes", "yes", "no", "yes", "no"))
+x
+table(x)
+class(x)
+```
+
+```{r}
+
+```

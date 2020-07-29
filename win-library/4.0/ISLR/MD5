@@ -1,4 +1,4 @@
-cc3d1a94231d8a5a752ad1110830968a *DESCRIPTION
+1a959fd2af344d04600954851e40f5cc *DESCRIPTION
 8c1b2cfcd734f4d1d9524ac0e390ca29 *INDEX
 a92f6c9fa129cdbd6816c62de87922e0 *Meta/Rd.rds
 bb605f542e814a17ebe50d14753ceab5 *Meta/data.rds
@@ -6,16 +6,16 @@ f51f28e08b4fc215e2f6955f2c2ae531 *Meta/features.rds
 289291cea5fa04eed20e858aa37f153a *Meta/hsearch.rds
 46c708963be29a2cda824a3cbb8f5e5f *Meta/links.rds
 c0d67f811dcc6386b5347b2238dfe56d *Meta/nsInfo.rds
-ac33b9f3c66b95cf1534b105d7058ce9 *Meta/package.rds
+e59c36501d234e2a62cc6f33daa42daf *Meta/package.rds
 df390c53434517b304ac5db487184641 *NAMESPACE
 ffc12f9cbba12a399c7aeb96619bb1ae *data/Rdata.rdb
 eb30b4afd68abab20299003d6562d8ae *data/Rdata.rds
 37b9ca99f908443ed5aaf3d268d87ce2 *data/Rdata.rdx
 15046484407239aa4fee96421f9b3e72 *data/datalist
 d5462c55a99982439b113423075ef11e *help/AnIndex
-9a1368e545c6addd07618eaf1f25fcf7 *help/ISLR.rdb
-fbb2bb45921b602bfb087cc21fc20af9 *help/ISLR.rdx
+d3a0f0c7b20f241679629831f7d10976 *help/ISLR.rdb
+e6e15614acb86586ef2502441798fee9 *help/ISLR.rdx
 37db13801aa85956671e87abb14b0de3 *help/aliases.rds
-7536de14a66db62817b9e7f12d0281ec *help/paths.rds
+9ce62203a423cfe6df3115f383748d2e *help/paths.rds
 1b180a2b30934d4fedb3c24f0c92e9fe *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css

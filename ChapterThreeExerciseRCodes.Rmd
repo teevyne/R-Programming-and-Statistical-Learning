@@ -1,0 +1,50 @@
+---
+title: "Chapter Three"
+author: "Tolu"
+date: "7/29/2020"
+output: html_document
+---
+```{r}
+library(ISLR)
+#fix(Auto)
+head(Auto)
+```
+
+```{r}
+auto_fix <- lm(mpg~horsepower, data=Auto)
+auto_fix
+```
+```{r}
+names(auto_fix)
+```
+
+```{r}
+summary(auto_fix)
+```
+Checking the intersecting point of the F- and p-values extremely close to zero, indicating that there is a strong, significant relationship between 
+
+To calculate the residual error relative to the response we use the mean of the response and the RSE. The mean of mpg is 23.4459184. The RSE of the lm.fit was 4.9057569 which indicates a percentage error of 20.9237141%. We may also note that as the R2 is equal to 0.6059483, almost 60.5948258% of the variability in “mpg” can be explained using “horsepower”
+
+As the coeficient of “horsepower” is negative, the relationship is also negative. The more horsepower an automobile has the linear regression indicates the less mpg fuel efficiency the automobile will have.
+
+```{r}
+predict(auto_fix, data.frame(horsepower = 98), interval = "prediction")
+```
+
+```{r}
+predict(auto_fix, data.frame(horsepower = 98), interval = "confidence")
+```
+
+```{r}
+plot(Auto$horsepower, Auto$mpg, main = "Scatterplotof mpg vs horsepower", xlab = "horsepower", ylab = "mpg", col = "blue")
+```
+
+```{r}
+abline(auto_fix, col="red")
+```
+
+```{r}
+par(mfrow = c(2, 2))
+plot(auto_fix)
+```
+The plot of residuals versus fitted values indicates the presence of non linearity in the data. The plot of standardized residuals versus leverage indicates the presence of a few outliers (higher than 2 or lower than -2) and a few high leverage points.

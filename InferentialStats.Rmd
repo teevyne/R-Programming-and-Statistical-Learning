@@ -1,0 +1,35 @@
+---
+title: "InferentialStatistics"
+author: "Tolu"
+date: "7/24/2020"
+output: html_document
+---
+
+```{r}
+dt <- read.csv(file.choose(), header = T)
+#t.test(dt$price, mu = 3000)
+t.test(dt$price, mu = 3000, alternative = "greater")
+# The formula (3932.8 - 3000)/(3989.44/sqrt(53940)) gives 54.30403
+
+# Since the p-value is far less than 0.05, we conclude that the mean price is greater than 3000 and so we reject the null hypothesis and fail to reject the alternative hypothesis
+#H-nut : U = 3000
+#H-one : U > 3000
+```
+
+```{r}
+dt <- read.csv(file.choose(), header = T)
+#t.test(dt$price, mu = 3000)
+t.test(dt$price, mu = 3000, alternative = "less")
+# The formula (3932.8 - 3000)/(3989.44/sqrt(53940)) gives 54.30403
+
+# Since the p-value ere is equal to 1, we conclude that the mean price is greater than or equal to 3000. Therefore, we accept the null hypothesis
+#H-nut : U = 3000
+#H-one : U < 3000
+```
+
+```{r}
+tep <- read.csv(file.choose(), header = T)
+library(MASS)
+library(car)
+leveneTest(tep$Temperature~as.factor(tep$Season))
+```

@@ -48,3 +48,14 @@ par(mfrow = c(2, 2))
 plot(auto_fix)
 ```
 The plot of residuals versus fitted values indicates the presence of non linearity in the data. The plot of standardized residuals versus leverage indicates the presence of a few outliers (higher than 2 or lower than -2) and a few high leverage points.
+
+```{r}
+pairs(Auto)
+```
+```{r}
+names(Auto)
+```
+
+```{r}
+cor(Auto[1:8])
+```

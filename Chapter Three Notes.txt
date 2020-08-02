@@ -1,0 +1,528 @@
+Sales = 13.04 + (-0.0544588)Price + (-0.0219162)Urban + (1.2005727)US
+
+Are outliers within the range -3 and 3 and -2 and 2?
+10h.	Mild outliers within the range -3 and 3
+	Good measure of high leverage present
+
+Call:
+lm(formula = y ~ x + 0)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.9154 -0.6472 -0.1771  0.5056  2.3109 
+
+Coefficients:
+  Estimate Std. Error t value Pr(>|t|)    
+x   1.9939     0.1065   18.73   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9586 on 99 degrees of freedom
+Multiple R-squared:  0.7798,    Adjusted R-squared:  0.7776 
+F-statistic: 350.7 on 1 and 99 DF,  p-value: < 2.2e-16
+
+Coeeficient estimate	1.9939
+Standard Error		0.1065
+t-value			18.73
+p-value			<2e-16
+
+The small p-value implies that we reject the null hypothesis
+
+> fit6 <- lm(x~y+0)
+> summary(fit6)
+
+Call:
+lm(formula = x ~ y + 0)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.8699 -0.2368  0.1030  0.2858  0.8938 
+
+Coefficients:
+  Estimate Std. Error t value Pr(>|t|)    
+y  0.39111    0.02089   18.73   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4246 on 99 degrees of freedom
+Multiple R-squared:  0.7798,    Adjusted R-squared:  0.7776 
+F-statistic: 350.7 on 1 and 99 DF,  p-value: < 2.2e-16
+
+Coefficient estimate	0.39111
+Standard error		0.02089
+t-value			18.73
+p-value			<2e-16
+
+We still reject the null hypothesis owing to the small value of p
+
+The relationship between both... Similar t- and p-values
+This reflects similar lines created in both
+In other words, \(y = 2x + \varepsilon\) could also be written \(x = 0.5(y − \varepsilon)\).
+
+
+> n = length(x)
+> a = sqrt(n - 1)*(x%*%y)
+> b = sqrt(sum(x^2)*sum(y^2)-(x%*%y)^2)
+> t = a/b
+> as.numeric(t)
+[1] 18.72593
+We may see that the t above is exactly the t-statistic given in the summary of “fit6”.
+
+
+> n = length(x)
+> a = sqrt(n - 1)*(y%*%x)
+> b = sqrt(sum(y^2)*sum(x^2)-(y%*%x)^2)
+> t = a/b
+> as.numeric(t)
+[1] 18.72593
+We may also see that interchanging Y and X in the above equation results in the same t-vlaue
+
+
+> fit7 <- lm(y~x)
+> summary(fit7)
+
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.8768 -0.6138 -0.1395  0.5394  2.3462 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.03769    0.09699  -0.389    0.698    
+x            1.99894    0.10773  18.556   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.9628 on 98 degrees of freedom
+Multiple R-squared:  0.7784,    Adjusted R-squared:  0.7762 
+F-statistic: 344.3 on 1 and 98 DF,  p-value: < 2.2e-16
+
+> fit7 <- lm(x~y)
+> summary(fit7)
+
+Call:
+lm(formula = x ~ y)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.90848 -0.28101  0.06274  0.24570  0.85736 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  0.03880    0.04266    0.91    0.365    
+y            0.38942    0.02099   18.56   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4249 on 98 degrees of freedom
+Multiple R-squared:  0.7784,    Adjusted R-squared:  0.7762 
+F-statistic: 344.3 on 1 and 98 DF,  p-value: < 2.2e-16
+
+From the above, we can comfortably see that the t-values for regressing Y on X and X on Y is the same (approximately)
+
+(a) Recall that the coefficient estimate ˆ β for the linear regression of
+Y onto X without an intercept is given by (3.38). Under what
+circumstance is the coefficient estimate for the regression of X
+onto Y the same as the coefficient estimate for the regression of
+Y onto X?
+
+
+The condition for which viceversa regressions are the same is if the denomators in both cases are the same (xi' == yi')
+ie( Y on X = sum((xiyi) / xi')) and X on Y = sum((xiyi) / yi'))
+
+(b) Generate an example in R with n = 100 observations in which
+the coefficient estimate for the regression of X onto Y is different
+from the coefficient estimate for the regression of Y onto X.
+
+
+> set.seed(1)
+> x <- 1:100
+> sum(x^2)
+[1] 338350
+> y <- 2 * x + rnorm(100, sd = 0.1)
+> x
+  [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37
+ [38]  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72  73  74
+ [75]  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100
+> y
+  [1]   1.937355   4.018364   5.916437   8.159528  10.032951  11.917953  14.048743  16.073832  18.057578  19.969461  22.151178  24.038984  25.937876
+ [14]  27.778530  30.112493  31.995507  33.998381  36.094384  38.082122  40.059390  42.091898  44.078214  46.007456  47.801065  50.061983  51.994387
+ [27]  53.984420  55.852925  57.952185  60.041794  62.135868  63.989721  66.038767  67.994619  69.862294  71.958501  73.960571  75.994069  78.110003
+ [40]  80.076318  81.983548  83.974664  86.069696  88.055666  89.931124  91.929250  94.036458  96.076853  97.988765 100.088111 102.039811 103.938797
+ [53] 106.034112 107.887064 110.143302 112.198040 113.963278 115.895587 118.056972 119.986495 122.240162 123.996076 126.068974 128.002800 129.925673
+ [66] 132.018879 133.819504 136.146555 138.015325 140.217261 142.047551 143.929005 146.061073 147.906590 149.874637 152.029145 153.955671 156.000111
+ [79] 158.007434 159.941048 161.943133 163.986482 166.117809 167.847643 170.059395 172.033295 174.106310 175.969582 178.037002 180.026710 181.945748
+ [92] 184.120787 186.116040 188.070021 190.158683 192.055849 193.872341 195.942673 197.877539 199.952660
+> sum(y^2)
+[1] 1353606
+> fit.x <- lm(x~y+0)
+> fit.y <- lm(y~x+0)
+> summary(fit.x)
+
+Call:
+lm(formula = x ~ y + 0)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.115418 -0.029231 -0.002186  0.031322  0.111795 
+
+Coefficients:
+  Estimate Std. Error t value Pr(>|t|)    
+y 5.00e-01   3.87e-05   12920   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.04502 on 99 degrees of freedom
+Multiple R-squared:      1,     Adjusted R-squared:      1 
+F-statistic: 1.669e+08 on 1 and 99 DF,  p-value: < 2.2e-16
+
+> summary(fit.y)
+
+Call:
+lm(formula = y ~ x + 0)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.223590 -0.062560  0.004426  0.058507  0.230926 
+
+Coefficients:
+   Estimate Std. Error t value Pr(>|t|)    
+x 2.0001514  0.0001548   12920   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.09005 on 99 degrees of freedom
+Multiple R-squared:      1,     Adjusted R-squared:      1 
+F-statistic: 1.669e+08 on 1 and 99 DF,  p-value: < 2.2e-16
+
+The t-values are the same from the above output but the coeeficient estaimates are not the same
+
+_______________________________________________________________________________
+
+> x <- 1:100
+> sum(x^2)
+[1] 338350
+> <- 100:1
+Error: unexpected assignment in "<-"
+> y <- 100:1
+> sum(y^2)
+[1] 338350
+> x
+  [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35  36  37
+ [38]  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72  73  74
+ [75]  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100
+> y
+  [1] 100  99  98  97  96  95  94  93  92  91  90  89  88  87  86  85  84  83  82  81  80  79  78  77  76  75  74  73  72  71  70  69  68  67  66  65  64
+ [38]  63  62  61  60  59  58  57  56  55  54  53  52  51  50  49  48  47  46  45  44  43  42  41  40  39  38  37  36  35  34  33  32  31  30  29  28  27
+ [75]  26  25  24  23  22  21  20  19  18  17  16  15  14  13  12  11  10   9   8   7   6   5   4   3   2   1
+> fit.y1 <- lm(y~x+0)
+> fit.x1 <- lm(x~y+0)
+> summary(fit.y1)
+
+Call:
+lm(formula = y ~ x + 0)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-49.75 -12.44  24.87  62.18  99.49 
+
+Coefficients:
+  Estimate Std. Error t value Pr(>|t|)    
+x   0.5075     0.0866    5.86 6.09e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 50.37 on 99 degrees of freedom
+Multiple R-squared:  0.2575,    Adjusted R-squared:   0.25 
+F-statistic: 34.34 on 1 and 99 DF,  p-value: 6.094e-08
+
+> summary(fit.x1)
+
+Call:
+lm(formula = x ~ y + 0)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-49.75 -12.44  24.87  62.18  99.49 
+
+Coefficients:
+  Estimate Std. Error t value Pr(>|t|)    
+y   0.5075     0.0866    5.86 6.09e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 50.37 on 99 degrees of freedom
+Multiple R-squared:  0.2575,    Adjusted R-squared:   0.25 
+F-statistic: 34.34 on 1 and 99 DF,  p-value: 6.094e-08
+
+The coefficient estimates here are not the same
+
+________________________________________________________________________________
+
+> plot(x, y)
+> fit0 <- lm(y~x)
+> summary(fit0)
+
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.93842 -0.30688 -0.06975  0.26970  1.17309 
+
+Coefficients:
+            Estimate       Std. Error t value Pr(>|t|)    
+(Intercept) -1.01885(^B))    0.04849 -21.010  < 2e-16 ***
+x            0.49947(B1)     0.05386   9.273 4.58e-15 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4814 on 98 degrees of freedom
+Multiple R-squared:  0.4674,    Adjusted R-squared:  0.4619 
+F-statistic: 85.99 on 1 and 98 DF,  p-value: 4.583e-15
+
+The values of \(\hat{\beta}_0\) and \(\hat{\beta}_1\) are pretty close to \(\beta_0\) and \(\beta_1\). The model has a large F-statistic with a near-zero p-value so the null hypothesis can be rejected.
+
+_________________________________________________________________________________________________________
+
+> plot(x, y)
+> abline(fit0, col="red")
+> abline(-1, 0.5, col="blue")
+> legend("bottomrigh", c("Least Square", "Regression"), col = c("red", "blue"), lty = c(1,1))
+
+________________________________________________________________________________________________________________
+
+> fit10 <- lm(y~x + I(x^2))
+> summary(fit10)
+
+Call:
+lm(formula = y ~ x + I(x^2))
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.98252 -0.31270 -0.06441  0.29014  1.13500 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.97164    0.05883 -16.517  < 2e-16 ***
+x            0.50858    0.05399   9.420  2.4e-15 ***
+I(x^2)      -0.05946    0.04238  -1.403    0.164    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.479 on 97 degrees of freedom
+Multiple R-squared:  0.4779,    Adjusted R-squared:  0.4672 
+F-statistic:  44.4 on 2 and 97 DF,  p-value: 2.038e-14
+
+
+No significant difference as the values are almost the same for p and t-values
+
+_____________________________________________________________________________________________________________________
+
+> set.seed(1)
+> eps <- rnorm(100, 0, 0.125)
+> x <- rnorm(100)
+> y <- -1+0.5*x + eps
+> length(y)
+[1] 100
+> fit11 <- lm(y~x)
+> summary(fit11)
+
+Call:
+lm(formula = y ~ x)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.29052 -0.07545  0.00067  0.07288  0.28664 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.98639    0.01129  -87.34   <2e-16 ***
+x            0.49988    0.01184   42.22   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1128 on 98 degrees of freedom
+Multiple R-squared:  0.9479,    Adjusted R-squared:  0.9474 
+F-statistic:  1782 on 1 and 98 DF,  p-value: < 2.2e-16
+
+________________________________________________________________________________________________________________________
+
+set.seed(1)
+eps <- rnorm(100, sd = 0.125)
+x <- rnorm(100)
+y <- -1 + 0.5 * x + eps
+plot(x, y)
+fit11 <- lm(y ~ x)
+summary(fit11)
+abline(fit11, col = "red")
+abline(-1, 0.5, col = "blue")
+legend("topleft", c("Least square", "Regression"), col = c("red", "blue"), lty = c(1, 1))
+
+We reduced the noise by decreasing the variance of the normal distribution used to generate the error term \(\varepsilon\). We may see that the coefficients are very close to the previous ones, but now, as the relationship is nearly linear, we have a much higher \(R^2\) and much lower \(RSE\). Moreover, the two lines overlap each other as we have very little noise.
+
+___________________________________________________________________________________________________________________________
+
+set.seed(1)
+eps <- rnorm(100, sd = 0.5)
+x <- rnorm(100)
+y <- -1 + 0.5 * x + eps
+plot(x, y)
+fit12 <- lm(y ~ x)
+summary(fit12)
+
+abline(fit12, col = "red")
+abline(-1, 0.5, col = "blue")
+legend("topleft", c("Least square", "Regression"), col = c("red", "blue"), lty = c(1, 1))
+
+We increased the noise by increasing the variance of the normal distribution used to generate the error term \(\varepsilon\). We may see that the coefficients are again very close to the previous ones, but now, as the relationship is not quite linear, we have a much lower \(R^2\) and much higher \(RSE\). Moreover, the two lines are wider apart but are still really close to each other as we have a fairly large data set.
+
+_____________________________________________________________________________________________________________________________
+
+> confint(fit0)
+                 2.5 %     97.5 %
+(Intercept) -1.1150804 -0.9226122
+x            0.3925794  0.6063602
+> confint(fit11)
+                2.5 %     97.5 %
+(Intercept) -1.008805 -0.9639819
+x            0.476387  0.5233799
+> confint(fit12)
+                 2.5 %     97.5 %
+(Intercept) -1.0115080 -0.9922612
+x            0.4892579  0.5106360
+
+All intervals seem to be centered on approximately 0.5. As the noise increases, the confidence intervals widen. With less noise, there is more predictability in the data set.
+______________________________________________________________________________________________________________________________
+
+> set.seed(1)
+> x1=runif (100)
+> x2 =0.5* x1+rnorm (100) /10
+> y=2+2* x1 +0.3* x2+rnorm (100)
+
+The normal form would be 
+y = 2 + 2x - 0.3x^2 + rnorm(100)
+The regression coefficients are respectively 2, 2 and -0.3
+___________________________________________________________________________________________________________
+
+> set.seed(1)
+> x1=runif (100)
+> x2 =0.5* x1+rnorm (100) /10
+> y=2+2* x1 +0.3* x2+rnorm (100)
+> cor(x1, x2)
+[1] 0.8351212
+> plot(x1, x2)
+> fit13 <- lm(y~x1 + x2)
+> fit13
+
+Call:
+lm(formula = y ~ x1 + x2)
+
+Coefficients:
+(Intercept)           x1           x2  
+       2.13         1.44         1.01  
+
+> summary(fit13)
+
+Call:
+lm(formula = y ~ x1 + x2)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.8311 -0.7273 -0.0537  0.6338  2.3359 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   2.1305     0.2319   9.188 7.61e-15 ***
+x1            1.4396     0.7212   1.996   0.0487 *  
+x2            1.0097     1.1337   0.891   0.3754    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.056 on 97 degrees of freedom
+Multiple R-squared:  0.2088,    Adjusted R-squared:  0.1925 
+F-statistic:  12.8 on 2 and 97 DF,  p-value: 1.164e-05
+
+> #B0 = 2.13, B1 = 1.4396, B2 = 1.0097
+> #The regression coefficients are respectively 2, 2 and 0.3
+> #Only B0 is close to ^B0. Since the p-value is less than 0.05, we may reject
+> #H0 for B1. For B2, we may fail to reject H0 since its p-value is
+> #greater than 0.05
+_______________________________________________________________________________________________________
+
+ fit14 <- lm(y~x1)
+> fit14
+
+Call:
+lm(formula = y ~ x1)
+
+Coefficients:
+(Intercept)           x1  
+      2.112        1.976  
+
+> summary(fit14)
+
+Call:
+lm(formula = y ~ x1)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.89495 -0.66874 -0.07785  0.59221  2.45560 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   2.1124     0.2307   9.155 8.27e-15 ***
+x1            1.9759     0.3963   4.986 2.66e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.055 on 98 degrees of freedom
+Multiple R-squared:  0.2024,    Adjusted R-squared:  0.1942 
+F-statistic: 24.86 on 1 and 98 DF,  p-value: 2.661e-06
+
+> #In this case “x1” is highly significant as its p-value is very low, so we may reject \(H_0\).
+> 
+____________________________________________________________________________________________________________
+
+Do the results obtained in (c)-(e) contradict each other ? Explain your answer.
+No, the results do not contradict each other. As the predictors “x1” and “x2” are highly correlated we are in the presence of collinearity, in this case it can be difficult to determine how each predictor separately is associated with the response. Since collinearity reduces the accuracy of the estimates of the regression coefficients, it causes the standard error for \(\hat{\beta}_1\) to grow (we have a standard error of 0.7211795 and 1.1337225 for “x1” and “x2” respectively in the model with two predictors and only of 0.3962774 and 0.6330467 for “x1” and “x2” respectively in the models with only one predictor). Consequently, we may fail to reject \(H_0\) in the presence of collinearity. The importance of the “x2” variable has been masked due to the presence of collinearity.
+
+--------------------------------------------------------------------------------------------------------------
+
+> fit15 <- lm(y~x2)
+> fit15
+
+Call:
+lm(formula = y ~ x2)
+
+Coefficients:
+(Intercept)           x2  
+       2.39         2.90  
+
+> summary(fit15)
+
+Call:
+lm(formula = y ~ x2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.62687 -0.75156 -0.03598  0.72383  2.44890 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   2.3899     0.1949   12.26  < 2e-16 ***
+x2            2.8996     0.6330    4.58 1.37e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.072 on 98 degrees of freedom
+Multiple R-squared:  0.1763,    Adjusted R-squared:  0.1679 
+F-statistic: 20.98 on 1 and 98 DF,  p-value: 1.366e-05
+
+> #The coefficient for “x2” in this last model is very different from the one with “x1” and “x2” as predictors. In this case “x2” is highly significant as its p-value is very low, so we may again reject \(H_0\).
+> 
+> 
+______________________________________________________________________________________________________________
+

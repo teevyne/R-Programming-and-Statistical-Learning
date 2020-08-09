@@ -1,0 +1,647 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> library(ISLR)
+> names(Smarket)
+[1] "Year"      "Lag1"      "Lag2"      "Lag3"      "Lag4"      "Lag5"      "Volume"    "Today"     "Direction"
+> dim(Smarket)
+[1] 1250    9
+> summary(Smarket)
+      Year           Lag1                Lag2                Lag3                Lag4                Lag5              Volume           Today          
+ Min.   :2001   Min.   :-4.922000   Min.   :-4.922000   Min.   :-4.922000   Min.   :-4.922000   Min.   :-4.92200   Min.   :0.3561   Min.   :-4.922000  
+ 1st Qu.:2002   1st Qu.:-0.639500   1st Qu.:-0.639500   1st Qu.:-0.640000   1st Qu.:-0.640000   1st Qu.:-0.64000   1st Qu.:1.2574   1st Qu.:-0.639500  
+ Median :2003   Median : 0.039000   Median : 0.039000   Median : 0.038500   Median : 0.038500   Median : 0.03850   Median :1.4229   Median : 0.038500  
+ Mean   :2003   Mean   : 0.003834   Mean   : 0.003919   Mean   : 0.001716   Mean   : 0.001636   Mean   : 0.00561   Mean   :1.4783   Mean   : 0.003138  
+ 3rd Qu.:2004   3rd Qu.: 0.596750   3rd Qu.: 0.596750   3rd Qu.: 0.596750   3rd Qu.: 0.596750   3rd Qu.: 0.59700   3rd Qu.:1.6417   3rd Qu.: 0.596750  
+ Max.   :2005   Max.   : 5.733000   Max.   : 5.733000   Max.   : 5.733000   Max.   : 5.733000   Max.   : 5.73300   Max.   :3.1525   Max.   : 5.733000  
+ Direction 
+ Down:602  
+ Up  :648  
+           
+           
+           
+           
+> cor(Smarket)
+Error in cor(Smarket) : 'x' must be numeric
+> head(Smarket)
+  Year   Lag1   Lag2   Lag3   Lag4   Lag5 Volume  Today Direction
+1 2001  0.381 -0.192 -2.624 -1.055  5.010 1.1913  0.959        Up
+2 2001  0.959  0.381 -0.192 -2.624 -1.055 1.2965  1.032        Up
+3 2001  1.032  0.959  0.381 -0.192 -2.624 1.4112 -0.623      Down
+4 2001 -0.623  1.032  0.959  0.381 -0.192 1.2760  0.614        Up
+5 2001  0.614 -0.623  1.032  0.959  0.381 1.2057  0.213        Up
+6 2001  0.213  0.614 -0.623  1.032  0.959 1.3491  1.392        Up
+> cor(Smarket[,-9])
+             Year         Lag1         Lag2         Lag3         Lag4         Lag5      Volume        Today
+Year   1.00000000  0.029699649  0.030596422  0.033194581  0.035688718  0.029787995  0.53900647  0.030095229
+Lag1   0.02969965  1.000000000 -0.026294328 -0.010803402 -0.002985911 -0.005674606  0.04090991 -0.026155045
+Lag2   0.03059642 -0.026294328  1.000000000 -0.025896670 -0.010853533 -0.003557949 -0.04338321 -0.010250033
+Lag3   0.03319458 -0.010803402 -0.025896670  1.000000000 -0.024051036 -0.018808338 -0.04182369 -0.002447647
+Lag4   0.03568872 -0.002985911 -0.010853533 -0.024051036  1.000000000 -0.027083641 -0.04841425 -0.006899527
+Lag5   0.02978799 -0.005674606 -0.003557949 -0.018808338 -0.027083641  1.000000000 -0.02200231 -0.034860083
+Volume 0.53900647  0.040909908 -0.043383215 -0.041823686 -0.048414246 -0.022002315  1.00000000  0.014591823
+Today  0.03009523 -0.026155045 -0.010250033 -0.002447647 -0.006899527 -0.034860083  0.01459182  1.000000000
+> head(Smarket[,-9])
+  Year   Lag1   Lag2   Lag3   Lag4   Lag5 Volume  Today
+1 2001  0.381 -0.192 -2.624 -1.055  5.010 1.1913  0.959
+2 2001  0.959  0.381 -0.192 -2.624 -1.055 1.2965  1.032
+3 2001  1.032  0.959  0.381 -0.192 -2.624 1.4112 -0.623
+4 2001 -0.623  1.032  0.959  0.381 -0.192 1.2760  0.614
+5 2001  0.614 -0.623  1.032  0.959  0.381 1.2057  0.213
+6 2001  0.213  0.614 -0.623  1.032  0.959 1.3491  1.392
+> pairs(Smarket)
+> attach(Smarket)
+> plot(Volume)
+> glm.fit <- glm(Direction~Lag1+Lag2+Lag3+Lag4+Lag5+Volume+Today, data = Smarket, family=binomial)
+Warning messages:
+1: glm.fit: algorithm did not converge 
+2: glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> glm.fits=glm(Direction∼Lag1+Lag2+Lag3+Lag4+Lag5+Volume,data=Smarket ,family =binomial)
+Error: unexpected input in "glm.fits=glm(Direction\"
+> glm.fits=glm(Direction~Lag1+Lag2+Lag3+Lag4+Lag5+Volume,data=Smarket ,family =binomial)
+> summary(glm.fits)
+
+Call:
+glm(formula = Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + 
+    Volume, family = binomial, data = Smarket)
+
+Deviance Residuals: 
+   Min      1Q  Median      3Q     Max  
+-1.446  -1.203   1.065   1.145   1.326  
+
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)
+(Intercept) -0.126000   0.240736  -0.523    0.601
+Lag1        -0.073074   0.050167  -1.457    0.145
+Lag2        -0.042301   0.050086  -0.845    0.398
+Lag3         0.011085   0.049939   0.222    0.824
+Lag4         0.009359   0.049974   0.187    0.851
+Lag5         0.010313   0.049511   0.208    0.835
+Volume       0.135441   0.158360   0.855    0.392
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 1731.2  on 1249  degrees of freedom
+Residual deviance: 1727.6  on 1243  degrees of freedom
+AIC: 1741.6
+
+Number of Fisher Scoring iterations: 3
+
+> coef(glm.fits)
+ (Intercept)         Lag1         Lag2         Lag3         Lag4         Lag5       Volume 
+-0.126000257 -0.073073746 -0.042301344  0.011085108  0.009358938  0.010313068  0.135440659 
+> summary(glm.fits)$coef
+                Estimate Std. Error    z value  Pr(>|z|)
+(Intercept) -0.126000257 0.24073574 -0.5233966 0.6006983
+Lag1        -0.073073746 0.05016739 -1.4565986 0.1452272
+Lag2        -0.042301344 0.05008605 -0.8445733 0.3983491
+Lag3         0.011085108 0.04993854  0.2219750 0.8243333
+Lag4         0.009358938 0.04997413  0.1872757 0.8514445
+Lag5         0.010313068 0.04951146  0.2082966 0.8349974
+Volume       0.135440659 0.15835970  0.8552723 0.3924004
+> summary(glm.fits)$coef[,4]
+(Intercept)        Lag1        Lag2        Lag3        Lag4        Lag5      Volume 
+  0.6006983   0.1452272   0.3983491   0.8243333   0.8514445   0.8349974   0.3924004 
+> glm.preds <- predict(glm.fits)
+> glm.probs[1:10]
+        1         2         3         4         5         6         7         8         9        10 
+0.5070841 0.4814679 0.4811388 0.5152224 0.5107812 0.5069565 0.4926509 0.5092292 0.5176135 0.4888378 
+> contrasts(Direction)
+     Up
+Down  0
+Up    1
+> glm.pred=rep ("Down " ,1250)
+> glm.pred[glm .probs >.5]=" Up"
+Error: unexpected symbol in "glm.pred[glm .probs"
+> glm.pred[glm .probs >.5]= "Up"
+Error: unexpected symbol in "glm.pred[glm .probs"
+> glm.pred[glm.probs >.5]= "Up"
+> table(glm .pred ,Direction )
+Error: unexpected symbol in "table(glm .pred"
+> table(glm .pred ,Direction)
+Error: unexpected symbol in "table(glm .pred"
+> table(glm.pred ,Direction)
+        Direction
+glm.pred Down  Up
+   Down   145 141
+   Up     457 507
+> 145+141+457+507
+[1] 1250
+> (145+141)/1250
+[1] 0.2288
+> (507+145)/1250
+[1] 0.5216
+> mean(glm.pred==Direction)
+[1] 0.4056
+> glm.pred
+   [1] "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"   
+  [19] "Up"    "Down " "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"   
+  [37] "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Down " "Down " "Down "
+  [55] "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Down " "Down " "Down " "Down " "Up"    "Down " "Down " "Up"    "Up"   
+  [73] "Up"    "Down " "Down " "Down " "Up"    "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down "
+  [91] "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [109] "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"   
+ [127] "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"   
+ [145] "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"   
+ [163] "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Down " "Down "
+ [181] "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down "
+ [199] "Down " "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"   
+ [217] "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Down " "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down "
+ [235] "Down " "Down " "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [253] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down "
+ [271] "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"   
+ [289] "Up"    "Down " "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"   
+ [307] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [325] "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Down " "Down " "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Down "
+ [343] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"   
+ [361] "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [379] "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down "
+ [397] "Up"    "Up"    "Down " "Down " "Up"    "Down " "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"   
+ [415] "Down " "Down " "Down " "Down " "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Down "
+ [433] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"   
+ [451] "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Down "
+ [469] "Down " "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Down "
+ [487] "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Down " "Up"    "Up"   
+ [505] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"   
+ [523] "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"   
+ [541] "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down "
+ [559] "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Down " "Down "
+ [577] "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down "
+ [595] "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"   
+ [613] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Down " "Up"    "Up"   
+ [631] "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down "
+ [649] "Down " "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"   
+ [667] "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Down "
+ [685] "Down " "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [703] "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [721] "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"   
+ [739] "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [757] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"   
+ [775] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [793] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"   
+ [811] "Up"    "Down " "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"   
+ [829] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [847] "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"   
+ [865] "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"   
+ [883] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"   
+ [901] "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Down " "Up"    "Up"    "Down " "Down " "Down " "Up"   
+ [919] "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Down "
+ [937] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down "
+ [955] "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [973] "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+ [991] "Up"    "Down " "Down " "Down " "Up"    "Down " "Down " "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1009] "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1027] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Down " "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1045] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1063] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1081] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1099] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1117] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1135] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1153] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1171] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1189] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1207] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1225] "Up"    "Up"    "Down " "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+[1243] "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"    "Up"   
+> train <- (Year<2005)
+> Smarket.2005 = Smarket[!train,]
+> dim(Smarket.2005)
+[1] 252   9
+> Direction.2005=Direction[!train]
+> glm.fits=glm(Direction~Lag1+Lag2+Lag3+Lag4+Lag5+Volume,data=Smarket ,family =binomial, subset=train)
+> glm.preds <- predict(glm.fits, Smarket.2055, type="response")
+Error in predict.lm(object, newdata, se.fit, scale = 1, type = if (type ==  : 
+  object 'Smarket.2055' not found
+> glm.preds <- predict(glm.fits, Smarket.2005, type="response")
+> glm.pred=rep ("Down " ,252)
+> glm.pred[glm .probs >.5]=" Up"
+Error: unexpected symbol in "glm.pred[glm .probs"
+> glm.pred[glm.probs >.5]=" Up"
+> table(glm.pred ,Direction .2005)
+Error: unexpected numeric constant in "table(glm.pred ,Direction .2005"
+> table(glm.pred ,Direction.2005)
+Error in table(glm.pred, Direction.2005) : 
+  all arguments must have the same length
+> table(glm.pred,Direction.2005)
+Error in table(glm.pred, Direction.2005) : 
+  all arguments must have the same length
+> glm.fits=glm(Direction~Lag1+Lag2 ,data=Smarket ,family =binomial ,
++ subset =train)
+> glm.preds <- predict(glm.fits, Smarket.2005, type="response")
+> glm.pred=rep ("Down " ,252)
+> table(glm .pred ,Direction .2005)
+Error: unexpected symbol in "table(glm .pred"
+> table(glm.pred ,Direction.2005)
+        Direction.2005
+glm.pred Down  Up
+   Down   111 141
+> mean(glm.pred== Direction .2005)
+Error: unexpected numeric constant in "mean(glm.pred== Direction .2005"
+> mean(glm.pred== Direction.2005)
+[1] 0
+> predict (glm.fits,newdata =data.frame(Lag1=c(1.2 ,1.5) ,
++ Lag2=c(1.1 , -0.8) ),type =" response ")
+Error in match.arg(type) : 
+  'arg' should be one of “link”, “response”, “terms”
+> Lag2=c(1.1 , -0.8) ),type ="response")
+Error: unexpected ')' in "Lag2=c(1.1 , -0.8) )"
+> library(MASS)
+> lda.fit <- lda(Direction~Lag1+Lag2+Lag3, data=Smarket, subset=train)
+> lda.fit
+Call:
+lda(Direction ~ Lag1 + Lag2 + Lag3, data = Smarket, subset = train)
+
+Prior probabilities of groups:
+    Down       Up 
+0.491984 0.508016 
+
+Group means:
+            Lag1        Lag2         Lag3
+Down  0.04279022  0.03389409 -0.009806517
+Up   -0.03954635 -0.03132544  0.005834320
+
+Coefficients of linear discriminants:
+            LD1
+Lag1 -0.6359074
+Lag2 -0.5074032
+Lag3  0.1011166
+> plot(lda.fit)
+> lda.pred=predict (lda.fit , Smarket .2005)
+Error: unexpected numeric constant in "lda.pred=predict (lda.fit , Smarket .2005"
+> lda.pred=predict (lda.fit , Smarket.2005)
+> names(lda.pred)
+[1] "class"     "posterior" "x"        
+> lda.class =lda.pred$class
+> table(lda .class ,Direction .2005)
+Error: unexpected symbol in "table(lda .class"
+> table(lda .class ,Direction.2005)
+Error: unexpected symbol in "table(lda .class"
+> table(lda .class ,Direction.2005)
+Error: unexpected symbol in "table(lda .class"
+> table(lda.class ,Direction.2005)
+         Direction.2005
+lda.class Down  Up
+     Down   38  31
+     Up     73 110
+> mean(lda.class == Direction.2005)
+[1] 0.5873016
+> sum(lda.pred$posterior [ ,1] >=.5)
+[1] 69
+> sum(lda.pred$posterior [,1]<.5)
+[1] 183
+> lda.pred$posterior [1:20 ,1]
+      999      1000      1001      1002      1003      1004      1005      1006      1007      1008      1009      1010      1011      1012      1013 
+0.4901932 0.4792223 0.4671730 0.4758412 0.4953589 0.4946377 0.4943235 0.4875951 0.4899635 0.4857416 0.4898421 0.5138411 0.4881697 0.4686145 0.4765891 
+     1014      1015      1016      1017      1018 
+0.4817012 0.4949900 0.5038316 0.4969730 0.4875692 
+> lda.class [1:20]
+ [1] Up   Up   Up   Up   Up   Up   Up   Up   Up   Up   Up   Down Up   Up   Up   Up   Up   Down Up   Up  
+Levels: Down Up
+> sum(lda.pred$posterior [,1]>.9)
+[1] 0
+> qda.fit=qda(Direction∼Lag1+Lag2 ,data=Smarket ,subset =train)
+Error: unexpected input in "qda.fit=qda(Direction\"
+> qda.fit=qda(Direction~Lag1+Lag2 ,data=Smarket ,subset =train)
+> qda.fit
+Call:
+qda(Direction ~ Lag1 + Lag2, data = Smarket, subset = train)
+
+Prior probabilities of groups:
+    Down       Up 
+0.491984 0.508016 
+
+Group means:
+            Lag1        Lag2
+Down  0.04279022  0.03389409
+Up   -0.03954635 -0.03132544
+> qda.class =predict (qda .fit ,Smarket .2005) $class
+Error: unexpected symbol in "qda.class =predict (qda .fit"
+> qda.class =predict (qda.fit ,Smarket.2005) $class
+> table(qda .class ,Direction .2005)
+Error: unexpected symbol in "table(qda .class"
+> table(qda.class ,Direction.2005)
+         Direction.2005
+qda.class Down  Up
+     Down   30  20
+     Up     81 121
+> mean(qda.class == Direction.2005)
+[1] 0.5992063
+> library(class)
+> train.X <- cbind(Lag1, Lag2)[train]
+> test.X <- cbind(lag1, Lag2)[!train]
+Error in cbind(lag1, Lag2) : object 'lag1' not found
+> test.X <- cbind(Lag1, Lag2)[!train]
+> train.Direction =Direction [train]
+> set.seed (1)
+> knn.pred <- knn(train.X, test.X, train.Direction, k=1)
+Error in knn(train.X, test.X, train.Direction, k = 1) : 
+  'train' and 'class' have different lengths
+> knn.pred=knn (train .X,test.X,train .Direction ,k=1)
+Error: unexpected symbol in "knn.pred=knn (train .X"
+> knn.pred=knn (train.X,test.X,train.Direction ,k=1)
+Error in knn(train.X, test.X, train.Direction, k = 1) : 
+  'train' and 'class' have different lengths
+> knn.pred=knn (train.X,test.X,train.Direction ,k=1)
+Error in knn(train.X, test.X, train.Direction, k = 1) : 
+  'train' and 'class' have different lengths
+> table(knn .pred ,Direction .2005)
+Error: unexpected symbol in "table(knn .pred"
+> table(knn.pred ,Direction.2005)
+Error in table(knn.pred, Direction.2005) : object 'knn.pred' not found
+> knn.pred=knn (train.X,test.X,train.Direction ,k=1)
+Error in knn(train.X, test.X, train.Direction, k = 1) : 
+  'train' and 'class' have different lengths
+> names(class)
+NULL
+> 
+> 
+> # AN APPLICATION TO THE CARAVAN INSURANCE DATA
+> dim(Caravan)
+[1] 5822   86
+> names(Caravan)
+ [1] "MOSTYPE"  "MAANTHUI" "MGEMOMV"  "MGEMLEEF" "MOSHOOFD" "MGODRK"   "MGODPR"   "MGODOV"   "MGODGE"   "MRELGE"   "MRELSA"   "MRELOV"   "MFALLEEN"
+[14] "MFGEKIND" "MFWEKIND" "MOPLHOOG" "MOPLMIDD" "MOPLLAAG" "MBERHOOG" "MBERZELF" "MBERBOER" "MBERMIDD" "MBERARBG" "MBERARBO" "MSKA"     "MSKB1"   
+[27] "MSKB2"    "MSKC"     "MSKD"     "MHHUUR"   "MHKOOP"   "MAUT1"    "MAUT2"    "MAUT0"    "MZFONDS"  "MZPART"   "MINKM30"  "MINK3045" "MINK4575"
+[40] "MINK7512" "MINK123M" "MINKGEM"  "MKOOPKLA" "PWAPART"  "PWABEDR"  "PWALAND"  "PPERSAUT" "PBESAUT"  "PMOTSCO"  "PVRAAUT"  "PAANHANG" "PTRACTOR"
+[53] "PWERKT"   "PBROM"    "PLEVEN"   "PPERSONG" "PGEZONG"  "PWAOREG"  "PBRAND"   "PZEILPL"  "PPLEZIER" "PFIETS"   "PINBOED"  "PBYSTAND" "AWAPART" 
+[66] "AWABEDR"  "AWALAND"  "APERSAUT" "ABESAUT"  "AMOTSCO"  "AVRAAUT"  "AAANHANG" "ATRACTOR" "AWERKT"   "ABROM"    "ALEVEN"   "APERSONG" "AGEZONG" 
+[79] "AWAOREG"  "ABRAND"   "AZEILPL"  "APLEZIER" "AFIETS"   "AINBOED"  "ABYSTAND" "Purchase"
+> attach(Caravan)
+> summary(Caravan)
+    MOSTYPE         MAANTHUI         MGEMOMV         MGEMLEEF        MOSHOOFD          MGODRK           MGODPR          MGODOV         MGODGE     
+ Min.   : 1.00   Min.   : 1.000   Min.   :1.000   Min.   :1.000   Min.   : 1.000   Min.   :0.0000   Min.   :0.000   Min.   :0.00   Min.   :0.000  
+ 1st Qu.:10.00   1st Qu.: 1.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.: 3.000   1st Qu.:0.0000   1st Qu.:4.000   1st Qu.:0.00   1st Qu.:2.000  
+ Median :30.00   Median : 1.000   Median :3.000   Median :3.000   Median : 7.000   Median :0.0000   Median :5.000   Median :1.00   Median :3.000  
+ Mean   :24.25   Mean   : 1.111   Mean   :2.679   Mean   :2.991   Mean   : 5.774   Mean   :0.6965   Mean   :4.627   Mean   :1.07   Mean   :3.259  
+ 3rd Qu.:35.00   3rd Qu.: 1.000   3rd Qu.:3.000   3rd Qu.:3.000   3rd Qu.: 8.000   3rd Qu.:1.0000   3rd Qu.:6.000   3rd Qu.:2.00   3rd Qu.:4.000  
+ Max.   :41.00   Max.   :10.000   Max.   :5.000   Max.   :6.000   Max.   :10.000   Max.   :9.0000   Max.   :9.000   Max.   :5.00   Max.   :9.000  
+     MRELGE          MRELSA           MRELOV        MFALLEEN        MFGEKIND       MFWEKIND      MOPLHOOG        MOPLMIDD        MOPLLAAG    
+ Min.   :0.000   Min.   :0.0000   Min.   :0.00   Min.   :0.000   Min.   :0.00   Min.   :0.0   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+ 1st Qu.:5.000   1st Qu.:0.0000   1st Qu.:1.00   1st Qu.:0.000   1st Qu.:2.00   1st Qu.:3.0   1st Qu.:0.000   1st Qu.:2.000   1st Qu.:3.000  
+ Median :6.000   Median :1.0000   Median :2.00   Median :2.000   Median :3.00   Median :4.0   Median :1.000   Median :3.000   Median :5.000  
+ Mean   :6.183   Mean   :0.8835   Mean   :2.29   Mean   :1.888   Mean   :3.23   Mean   :4.3   Mean   :1.461   Mean   :3.351   Mean   :4.572  
+ 3rd Qu.:7.000   3rd Qu.:1.0000   3rd Qu.:3.00   3rd Qu.:3.000   3rd Qu.:4.00   3rd Qu.:6.0   3rd Qu.:2.000   3rd Qu.:4.000   3rd Qu.:6.000  
+ Max.   :9.000   Max.   :7.0000   Max.   :9.00   Max.   :9.000   Max.   :9.00   Max.   :9.0   Max.   :9.000   Max.   :9.000   Max.   :9.000  
+    MBERHOOG        MBERZELF        MBERBOER         MBERMIDD        MBERARBG       MBERARBO          MSKA           MSKB1           MSKB2      
+ Min.   :0.000   Min.   :0.000   Min.   :0.0000   Min.   :0.000   Min.   :0.00   Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+ 1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:2.000   1st Qu.:1.00   1st Qu.:1.000   1st Qu.:0.000   1st Qu.:1.000   1st Qu.:1.000  
+ Median :2.000   Median :0.000   Median :0.0000   Median :3.000   Median :2.00   Median :2.000   Median :1.000   Median :2.000   Median :2.000  
+ Mean   :1.895   Mean   :0.398   Mean   :0.5223   Mean   :2.899   Mean   :2.22   Mean   :2.306   Mean   :1.621   Mean   :1.607   Mean   :2.203  
+ 3rd Qu.:3.000   3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:4.000   3rd Qu.:3.00   3rd Qu.:3.000   3rd Qu.:2.000   3rd Qu.:2.000   3rd Qu.:3.000  
+ Max.   :9.000   Max.   :5.000   Max.   :9.0000   Max.   :9.000   Max.   :9.00   Max.   :9.000   Max.   :9.000   Max.   :9.000   Max.   :9.000  
+      MSKC            MSKD           MHHUUR          MHKOOP          MAUT1          MAUT2           MAUT0          MZFONDS          MZPART     
+ Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.00   Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+ 1st Qu.:2.000   1st Qu.:0.000   1st Qu.:2.000   1st Qu.:2.000   1st Qu.:5.00   1st Qu.:0.000   1st Qu.:1.000   1st Qu.:5.000   1st Qu.:1.000  
+ Median :4.000   Median :1.000   Median :4.000   Median :5.000   Median :6.00   Median :1.000   Median :2.000   Median :7.000   Median :2.000  
+ Mean   :3.759   Mean   :1.067   Mean   :4.237   Mean   :4.772   Mean   :6.04   Mean   :1.316   Mean   :1.959   Mean   :6.277   Mean   :2.729  
+ 3rd Qu.:5.000   3rd Qu.:2.000   3rd Qu.:7.000   3rd Qu.:7.000   3rd Qu.:7.00   3rd Qu.:2.000   3rd Qu.:3.000   3rd Qu.:8.000   3rd Qu.:4.000  
+ Max.   :9.000   Max.   :9.000   Max.   :9.000   Max.   :9.000   Max.   :9.00   Max.   :7.000   Max.   :9.000   Max.   :9.000   Max.   :9.000  
+    MINKM30         MINK3045        MINK4575        MINK7512         MINK123M         MINKGEM         MKOOPKLA        PWAPART          PWABEDR       
+ Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.0000   Min.   :0.0000   Min.   :0.000   Min.   :1.000   Min.   :0.0000   Min.   :0.00000  
+ 1st Qu.:1.000   1st Qu.:2.000   1st Qu.:1.000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:3.000   1st Qu.:3.000   1st Qu.:0.0000   1st Qu.:0.00000  
+ Median :2.000   Median :4.000   Median :3.000   Median :0.0000   Median :0.0000   Median :4.000   Median :4.000   Median :0.0000   Median :0.00000  
+ Mean   :2.574   Mean   :3.536   Mean   :2.731   Mean   :0.7961   Mean   :0.2027   Mean   :3.784   Mean   :4.236   Mean   :0.7712   Mean   :0.04002  
+ 3rd Qu.:4.000   3rd Qu.:5.000   3rd Qu.:4.000   3rd Qu.:1.0000   3rd Qu.:0.0000   3rd Qu.:4.000   3rd Qu.:6.000   3rd Qu.:2.0000   3rd Qu.:0.00000  
+ Max.   :9.000   Max.   :9.000   Max.   :9.000   Max.   :9.0000   Max.   :9.0000   Max.   :9.000   Max.   :8.000   Max.   :3.0000   Max.   :6.00000  
+    PWALAND           PPERSAUT       PBESAUT           PMOTSCO          PVRAAUT            PAANHANG          PTRACTOR           PWERKT       
+ Min.   :0.00000   Min.   :0.00   Min.   :0.00000   Min.   :0.0000   Min.   :0.000000   Min.   :0.00000   Min.   :0.00000   Min.   :0.00000  
+ 1st Qu.:0.00000   1st Qu.:0.00   1st Qu.:0.00000   1st Qu.:0.0000   1st Qu.:0.000000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.00000  
+ Median :0.00000   Median :5.00   Median :0.00000   Median :0.0000   Median :0.000000   Median :0.00000   Median :0.00000   Median :0.00000  
+ Mean   :0.07162   Mean   :2.97   Mean   :0.04827   Mean   :0.1754   Mean   :0.009447   Mean   :0.02096   Mean   :0.09258   Mean   :0.01305  
+ 3rd Qu.:0.00000   3rd Qu.:6.00   3rd Qu.:0.00000   3rd Qu.:0.0000   3rd Qu.:0.000000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.00000  
+ Max.   :4.00000   Max.   :8.00   Max.   :7.00000   Max.   :7.0000   Max.   :9.000000   Max.   :5.00000   Max.   :6.00000   Max.   :6.00000  
+     PBROM           PLEVEN          PPERSONG          PGEZONG           PWAOREG            PBRAND         PZEILPL             PPLEZIER      
+ Min.   :0.000   Min.   :0.0000   Min.   :0.00000   Min.   :0.00000   Min.   :0.00000   Min.   :0.000   Min.   :0.0000000   Min.   :0.00000  
+ 1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.000   1st Qu.:0.0000000   1st Qu.:0.00000  
+ Median :0.000   Median :0.0000   Median :0.00000   Median :0.00000   Median :0.00000   Median :2.000   Median :0.0000000   Median :0.00000  
+ Mean   :0.215   Mean   :0.1948   Mean   :0.01374   Mean   :0.01529   Mean   :0.02353   Mean   :1.828   Mean   :0.0008588   Mean   :0.01889  
+ 3rd Qu.:0.000   3rd Qu.:0.0000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:4.000   3rd Qu.:0.0000000   3rd Qu.:0.00000  
+ Max.   :6.000   Max.   :9.0000   Max.   :6.00000   Max.   :3.00000   Max.   :7.00000   Max.   :8.000   Max.   :3.0000000   Max.   :6.00000  
+     PFIETS           PINBOED           PBYSTAND          AWAPART         AWABEDR           AWALAND           APERSAUT         ABESAUT       
+ Min.   :0.00000   Min.   :0.00000   Min.   :0.00000   Min.   :0.000   Min.   :0.00000   Min.   :0.00000   Min.   :0.0000   Min.   :0.00000  
+ 1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.0000   1st Qu.:0.00000  
+ Median :0.00000   Median :0.00000   Median :0.00000   Median :0.000   Median :0.00000   Median :0.00000   Median :1.0000   Median :0.00000  
+ Mean   :0.02525   Mean   :0.01563   Mean   :0.04758   Mean   :0.403   Mean   :0.01477   Mean   :0.02061   Mean   :0.5622   Mean   :0.01048  
+ 3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:1.000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:1.0000   3rd Qu.:0.00000  
+ Max.   :1.00000   Max.   :6.00000   Max.   :5.00000   Max.   :2.000   Max.   :5.00000   Max.   :1.00000   Max.   :7.0000   Max.   :4.00000  
+    AMOTSCO           AVRAAUT            AAANHANG          ATRACTOR           AWERKT             ABROM             ALEVEN           APERSONG       
+ Min.   :0.00000   Min.   :0.000000   Min.   :0.00000   Min.   :0.00000   Min.   :0.000000   Min.   :0.00000   Min.   :0.00000   Min.   :0.000000  
+ 1st Qu.:0.00000   1st Qu.:0.000000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.000000   1st Qu.:0.00000   1st Qu.:0.00000   1st Qu.:0.000000  
+ Median :0.00000   Median :0.000000   Median :0.00000   Median :0.00000   Median :0.000000   Median :0.00000   Median :0.00000   Median :0.000000  
+ Mean   :0.04105   Mean   :0.002233   Mean   :0.01254   Mean   :0.03367   Mean   :0.006183   Mean   :0.07042   Mean   :0.07661   Mean   :0.005325  
+ 3rd Qu.:0.00000   3rd Qu.:0.000000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.000000   3rd Qu.:0.00000   3rd Qu.:0.00000   3rd Qu.:0.000000  
+ Max.   :8.00000   Max.   :3.000000   Max.   :3.00000   Max.   :4.00000   Max.   :6.000000   Max.   :2.00000   Max.   :8.00000   Max.   :1.000000  
+    AGEZONG            AWAOREG             ABRAND          AZEILPL             APLEZIER            AFIETS           AINBOED            ABYSTAND      
+ Min.   :0.000000   Min.   :0.000000   Min.   :0.0000   Min.   :0.0000000   Min.   :0.000000   Min.   :0.00000   Min.   :0.000000   Min.   :0.00000  
+ 1st Qu.:0.000000   1st Qu.:0.000000   1st Qu.:0.0000   1st Qu.:0.0000000   1st Qu.:0.000000   1st Qu.:0.00000   1st Qu.:0.000000   1st Qu.:0.00000  
+ Median :0.000000   Median :0.000000   Median :1.0000   Median :0.0000000   Median :0.000000   Median :0.00000   Median :0.000000   Median :0.00000  
+ Mean   :0.006527   Mean   :0.004638   Mean   :0.5701   Mean   :0.0005153   Mean   :0.006012   Mean   :0.03178   Mean   :0.007901   Mean   :0.01426  
+ 3rd Qu.:0.000000   3rd Qu.:0.000000   3rd Qu.:1.0000   3rd Qu.:0.0000000   3rd Qu.:0.000000   3rd Qu.:0.00000   3rd Qu.:0.000000   3rd Qu.:0.00000  
+ Max.   :1.000000   Max.   :2.000000   Max.   :7.0000   Max.   :1.0000000   Max.   :2.000000   Max.   :3.00000   Max.   :2.000000   Max.   :2.00000  
+ Purchase  
+ No :5474  
+ Yes: 348  
+           
+           
+           
+           
+> summary(Purchase)
+  No  Yes 
+5474  348 
+> names(Caravan)
+ [1] "MOSTYPE"  "MAANTHUI" "MGEMOMV"  "MGEMLEEF" "MOSHOOFD" "MGODRK"   "MGODPR"   "MGODOV"   "MGODGE"   "MRELGE"   "MRELSA"   "MRELOV"   "MFALLEEN"
+[14] "MFGEKIND" "MFWEKIND" "MOPLHOOG" "MOPLMIDD" "MOPLLAAG" "MBERHOOG" "MBERZELF" "MBERBOER" "MBERMIDD" "MBERARBG" "MBERARBO" "MSKA"     "MSKB1"   
+[27] "MSKB2"    "MSKC"     "MSKD"     "MHHUUR"   "MHKOOP"   "MAUT1"    "MAUT2"    "MAUT0"    "MZFONDS"  "MZPART"   "MINKM30"  "MINK3045" "MINK4575"
+[40] "MINK7512" "MINK123M" "MINKGEM"  "MKOOPKLA" "PWAPART"  "PWABEDR"  "PWALAND"  "PPERSAUT" "PBESAUT"  "PMOTSCO"  "PVRAAUT"  "PAANHANG" "PTRACTOR"
+[53] "PWERKT"   "PBROM"    "PLEVEN"   "PPERSONG" "PGEZONG"  "PWAOREG"  "PBRAND"   "PZEILPL"  "PPLEZIER" "PFIETS"   "PINBOED"  "PBYSTAND" "AWAPART" 
+[66] "AWABEDR"  "AWALAND"  "APERSAUT" "ABESAUT"  "AMOTSCO"  "AVRAAUT"  "AAANHANG" "ATRACTOR" "AWERKT"   "ABROM"    "ALEVEN"   "APERSONG" "AGEZONG" 
+[79] "AWAOREG"  "ABRAND"   "AZEILPL"  "APLEZIER" "AFIETS"   "AINBOED"  "ABYSTAND" "Purchase"
+> head(Caravan)
+  MOSTYPE MAANTHUI MGEMOMV MGEMLEEF MOSHOOFD MGODRK MGODPR MGODOV MGODGE MRELGE MRELSA MRELOV MFALLEEN MFGEKIND MFWEKIND MOPLHOOG MOPLMIDD MOPLLAAG
+1      33        1       3        2        8      0      5      1      3      7      0      2        1        2        6        1        2        7
+2      37        1       2        2        8      1      4      1      4      6      2      2        0        4        5        0        5        4
+3      37        1       2        2        8      0      4      2      4      3      2      4        4        4        2        0        5        4
+4       9        1       3        3        3      2      3      2      4      5      2      2        2        3        4        3        4        2
+5      40        1       4        2       10      1      4      1      4      7      1      2        2        4        4        5        4        0
+6      23        1       2        1        5      0      5      0      5      0      6      3        3        5        2        0        5        4
+  MBERHOOG MBERZELF MBERBOER MBERMIDD MBERARBG MBERARBO MSKA MSKB1 MSKB2 MSKC MSKD MHHUUR MHKOOP MAUT1 MAUT2 MAUT0 MZFONDS MZPART MINKM30 MINK3045 MINK4575
+1        1        0        1        2        5        2    1     1     2    6    1      1      8     8     0     1       8      1       0        4        5
+2        0        0        0        5        0        4    0     2     3    5    0      2      7     7     1     2       6      3       2        0        5
+3        0        0        0        7        0        2    0     5     0    4    0      7      2     7     0     2       9      0       4        5        0
+4        4        0        0        3        1        2    3     2     1    4    0      5      4     9     0     0       7      2       1        5        3
+5        0        5        4        0        0        0    9     0     0    0    0      4      5     6     2     1       5      4       0        0        9
+6        2        0        0        4        2        2    2     2     2    4    2      9      0     5     3     3       9      0       5        2        3
+  MINK7512 MINK123M MINKGEM MKOOPKLA PWAPART PWABEDR PWALAND PPERSAUT PBESAUT PMOTSCO PVRAAUT PAANHANG PTRACTOR PWERKT PBROM PLEVEN PPERSONG PGEZONG
+1        0        0       4        3       0       0       0        6       0       0       0        0        0      0     0      0        0       0
+2        2        0       5        4       2       0       0        0       0       0       0        0        0      0     0      0        0       0
+3        0        0       3        4       2       0       0        6       0       0       0        0        0      0     0      0        0       0
+4        0        0       4        4       0       0       0        6       0       0       0        0        0      0     0      0        0       0
+5        0        0       6        3       0       0       0        0       0       0       0        0        0      0     0      0        0       0
+6        0        0       3        3       0       0       0        6       0       0       0        0        0      0     0      0        0       0
+  PWAOREG PBRAND PZEILPL PPLEZIER PFIETS PINBOED PBYSTAND AWAPART AWABEDR AWALAND APERSAUT ABESAUT AMOTSCO AVRAAUT AAANHANG ATRACTOR AWERKT ABROM ALEVEN
+1       0      5       0        0      0       0        0       0       0       0        1       0       0       0        0        0      0     0      0
+2       0      2       0        0      0       0        0       2       0       0        0       0       0       0        0        0      0     0      0
+3       0      2       0        0      0       0        0       1       0       0        1       0       0       0        0        0      0     0      0
+4       0      2       0        0      0       0        0       0       0       0        1       0       0       0        0        0      0     0      0
+5       0      6       0        0      0       0        0       0       0       0        0       0       0       0        0        0      0     0      0
+6       0      0       0        0      0       0        0       0       0       0        1       0       0       0        0        0      0     0      0
+  APERSONG AGEZONG AWAOREG ABRAND AZEILPL APLEZIER AFIETS AINBOED ABYSTAND Purchase
+1        0       0       0      1       0        0      0       0        0       No
+2        0       0       0      1       0        0      0       0        0       No
+3        0       0       0      1       0        0      0       0        0       No
+4        0       0       0      1       0        0      0       0        0       No
+5        0       0       0      1       0        0      0       0        0       No
+6        0       0       0      0       0        0      0       0        0       No
+> newCar <- Caravan[, -86]
+> names(newCar)
+ [1] "MOSTYPE"  "MAANTHUI" "MGEMOMV"  "MGEMLEEF" "MOSHOOFD" "MGODRK"   "MGODPR"   "MGODOV"   "MGODGE"   "MRELGE"   "MRELSA"   "MRELOV"   "MFALLEEN"
+[14] "MFGEKIND" "MFWEKIND" "MOPLHOOG" "MOPLMIDD" "MOPLLAAG" "MBERHOOG" "MBERZELF" "MBERBOER" "MBERMIDD" "MBERARBG" "MBERARBO" "MSKA"     "MSKB1"   
+[27] "MSKB2"    "MSKC"     "MSKD"     "MHHUUR"   "MHKOOP"   "MAUT1"    "MAUT2"    "MAUT0"    "MZFONDS"  "MZPART"   "MINKM30"  "MINK3045" "MINK4575"
+[40] "MINK7512" "MINK123M" "MINKGEM"  "MKOOPKLA" "PWAPART"  "PWABEDR"  "PWALAND"  "PPERSAUT" "PBESAUT"  "PMOTSCO"  "PVRAAUT"  "PAANHANG" "PTRACTOR"
+[53] "PWERKT"   "PBROM"    "PLEVEN"   "PPERSONG" "PGEZONG"  "PWAOREG"  "PBRAND"   "PZEILPL"  "PPLEZIER" "PFIETS"   "PINBOED"  "PBYSTAND" "AWAPART" 
+[66] "AWABEDR"  "AWALAND"  "APERSAUT" "ABESAUT"  "AMOTSCO"  "AVRAAUT"  "AAANHANG" "ATRACTOR" "AWERKT"   "ABROM"    "ALEVEN"   "APERSONG" "AGEZONG" 
+[79] "AWAOREG"  "ABRAND"   "AZEILPL"  "APLEZIER" "AFIETS"   "AINBOED"  "ABYSTAND"
+> head(newCar)
+  MOSTYPE MAANTHUI MGEMOMV MGEMLEEF MOSHOOFD MGODRK MGODPR MGODOV MGODGE MRELGE MRELSA MRELOV MFALLEEN MFGEKIND MFWEKIND MOPLHOOG MOPLMIDD MOPLLAAG
+1      33        1       3        2        8      0      5      1      3      7      0      2        1        2        6        1        2        7
+2      37        1       2        2        8      1      4      1      4      6      2      2        0        4        5        0        5        4
+3      37        1       2        2        8      0      4      2      4      3      2      4        4        4        2        0        5        4
+4       9        1       3        3        3      2      3      2      4      5      2      2        2        3        4        3        4        2
+5      40        1       4        2       10      1      4      1      4      7      1      2        2        4        4        5        4        0
+6      23        1       2        1        5      0      5      0      5      0      6      3        3        5        2        0        5        4
+  MBERHOOG MBERZELF MBERBOER MBERMIDD MBERARBG MBERARBO MSKA MSKB1 MSKB2 MSKC MSKD MHHUUR MHKOOP MAUT1 MAUT2 MAUT0 MZFONDS MZPART MINKM30 MINK3045 MINK4575
+1        1        0        1        2        5        2    1     1     2    6    1      1      8     8     0     1       8      1       0        4        5
+2        0        0        0        5        0        4    0     2     3    5    0      2      7     7     1     2       6      3       2        0        5
+3        0        0        0        7        0        2    0     5     0    4    0      7      2     7     0     2       9      0       4        5        0
+4        4        0        0        3        1        2    3     2     1    4    0      5      4     9     0     0       7      2       1        5        3
+5        0        5        4        0        0        0    9     0     0    0    0      4      5     6     2     1       5      4       0        0        9
+6        2        0        0        4        2        2    2     2     2    4    2      9      0     5     3     3       9      0       5        2        3
+  MINK7512 MINK123M MINKGEM MKOOPKLA PWAPART PWABEDR PWALAND PPERSAUT PBESAUT PMOTSCO PVRAAUT PAANHANG PTRACTOR PWERKT PBROM PLEVEN PPERSONG PGEZONG
+1        0        0       4        3       0       0       0        6       0       0       0        0        0      0     0      0        0       0
+2        2        0       5        4       2       0       0        0       0       0       0        0        0      0     0      0        0       0
+3        0        0       3        4       2       0       0        6       0       0       0        0        0      0     0      0        0       0
+4        0        0       4        4       0       0       0        6       0       0       0        0        0      0     0      0        0       0
+5        0        0       6        3       0       0       0        0       0       0       0        0        0      0     0      0        0       0
+6        0        0       3        3       0       0       0        6       0       0       0        0        0      0     0      0        0       0
+  PWAOREG PBRAND PZEILPL PPLEZIER PFIETS PINBOED PBYSTAND AWAPART AWABEDR AWALAND APERSAUT ABESAUT AMOTSCO AVRAAUT AAANHANG ATRACTOR AWERKT ABROM ALEVEN
+1       0      5       0        0      0       0        0       0       0       0        1       0       0       0        0        0      0     0      0
+2       0      2       0        0      0       0        0       2       0       0        0       0       0       0        0        0      0     0      0
+3       0      2       0        0      0       0        0       1       0       0        1       0       0       0        0        0      0     0      0
+4       0      2       0        0      0       0        0       0       0       0        1       0       0       0        0        0      0     0      0
+5       0      6       0        0      0       0        0       0       0       0        0       0       0       0        0        0      0     0      0
+6       0      0       0        0      0       0        0       0       0       0        1       0       0       0        0        0      0     0      0
+  APERSONG AGEZONG AWAOREG ABRAND AZEILPL APLEZIER AFIETS AINBOED ABYSTAND
+1        0       0       0      1       0        0      0       0        0
+2        0       0       0      1       0        0      0       0        0
+3        0       0       0      1       0        0      0       0        0
+4        0       0       0      1       0        0      0       0        0
+5        0       0       0      1       0        0      0       0        0
+6        0       0       0      0       0        0      0       0        0
+> standardised.X <- scale(newCar)
+> var(Caravan[,1])
+[1] 165.0378
+> var(Caravan[,2])
+[1] 0.1647078
+> var(Standardised.x[,1])
+Error in is.data.frame(x) : object 'Standardised.x' not found
+> var(Standardised.X[,1])
+Error in is.data.frame(x) : object 'Standardised.X' not found
+> var( standardised.X[,1])
+[1] 1
+> var(standardised.X[,2])
+[1] 1
+> var(Caravan[,15])
+[1] 4.021161
+> var(Caravan[,25])
+[1] 2.968324
+> var( standardised.X[,15])
+[1] 1
+> var( standardised.X[,25])
+[1] 1
+> mean( standardised.X[,25])
+[1] -6.419597e-17
+> mean(standardised.X[,2])
+[1] -1.470838e-16
+> 
+> # Make first 1000 into the test dataser
+> # Make first 1000 into the test dataset
+> test <- 1:1000
+> # Evidently, the remaining data becomes the training dat
+> # Now let's standardise the training data and save in a variable
+> train.X <- standardised.X[test,]
+> test <- 1:1000
+> # Evidently, the remaining data becomes the training dat
+> # Now let's standardise the training data and save in a variable
+> train.X <- standardised.X[-test,]
+> test.X <- standardised.X[test,]
+> train.Y <- Purchase[-test]
+> test.Y <- Purchase[test]
+> set.seed(1)
+> knn.pred <- knn(train.X, test.X, train.Y, k=1)
+> mean(test.Y!=knn.pred)
+[1] 0.118
+> mean(test.Y != "No")
+[1] 0.059
+> table(knn.pred ,test.Y)
+        test.Y
+knn.pred  No Yes
+     No  873  50
+     Yes  68   9
+> 9/(68+9)
+[1] 0.1168831
+> knn.pred=knn (train.X,test.X,train.Y,k=3)
+> table(knn.pred ,test.Y)
+        test.Y
+knn.pred  No Yes
+     No  920  54
+     Yes  21   5
+> 5/26
+[1] 0.1923077
+> knn.pred=knn (train.X,test.X,train.Y,k=5)
+> table(knn.pred ,test.Y)
+        test.Y
+knn.pred  No Yes
+     No  930  55
+     Yes  11   4
+> 4/15
+[1] 0.2666667
+> glm.fits=glm(Purchase~.,data=Caravan ,family=binomial,subset =-test)
+Warning message:
+glm.fit: fitted probabilities numerically 0 or 1 occurred 
+> glm.probs =predict (glm.fits, Caravan [test,], type ="response")
+> glm.pred=rep ("No " ,1000)
+> glm.pred[glm.probs >.5]=" Yes "
+> table(glm.pred ,test.Y)
+        test.Y
+glm.pred  No Yes
+    Yes    7   0
+   No    934  59
+> glm.pred=rep ("No " ,1000)
+> glm.pred[glm.probs >.25]=" Yes"
+> table(glm.pred ,test.Y)
+        test.Y
+glm.pred  No Yes
+     Yes  22  11
+    No   919  48
+> 11/(22+11)
+[1] 0.3333333
+> 

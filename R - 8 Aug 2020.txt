@@ -1,0 +1,1039 @@
+
+R version 4.0.2 (2020-06-22) -- "Taking Off Again"
+Copyright (C) 2020 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> cold <- read.csv(file.choose(), header = T)
+> head(cold)
+  Product Age Gender Education MaritalStatus Usage Fitness Income Miles
+1   TM195  18   Male        14        Single     3       4  29562   112
+2   TM195  19   Male        15        Single     2       3  31836    75
+3   TM195  19 Female        14     Partnered     4       3  30699    66
+4   TM195  19   Male        12        Single     3       3  32973    85
+5   TM195  20   Male        13     Partnered     4       2  35247    47
+6   TM195  20 Female        14     Partnered     3       3  32973    66
+> mc <- lm(Income~Age+Education+Miles, data = cold)
+> summary(mc)
+
+Call:
+lm(formula = Income ~ Age + Education + Miles, data = cold)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-23126  -5500  -1103   4894  31409 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -48487.82    7070.75  -6.858 1.14e-10 ***
+Age            924.14     107.95   8.561 5.41e-15 ***
+Education     3992.20     486.75   8.202 4.80e-14 ***
+Miles          130.19      14.58   8.931 5.50e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9611 on 176 degrees of freedom
+Multiple R-squared:  0.6667,    Adjusted R-squared:  0.661 
+F-statistic: 117.3 on 3 and 176 DF,  p-value: < 2.2e-16
+
+> # Interpreting this,
+> # Income = 924.14(Age) + 3992.20(Education) + 130.19(Miles)
+> mc1 <- lm(Income~Age+Education+Miles+Gender, data = cold)
+> summary(mc1)
+
+Call:
+lm(formula = Income ~ Age + Education + Miles + Gender, data = cold)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-21886.9  -5667.6   -702.2   5202.1  30749.3 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -48993.23    7050.48  -6.949 6.98e-11 ***
+Age            922.09     107.53   8.575 5.11e-15 ***
+Education     3973.77     484.98   8.194 5.16e-14 ***
+Miles          125.61      14.82   8.477 9.31e-15 ***
+GenderMale    2291.44    1481.01   1.547    0.124    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9573 on 175 degrees of freedom
+Multiple R-squared:  0.6712,    Adjusted R-squared:  0.6636 
+F-statistic: 89.29 on 4 and 175 DF,  p-value: < 2.2e-16
+
+> # Since the male was picked, it follows that male was assigned 1 and female, 0.
+> # For every male, there is 2291.44 more salaries compared to the females
+> 
+> library(dplyr)
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+> dt <- cold%>%mutate(Female=case_when(Gender=="Female"~1, Gender=="Male"~0, Male=case_when(Gender=="Male"~1, Gender=="Female"~0))
++ head(dt)
+Error: unexpected symbol in:
+"dt <- cold%>%mutate(Female=case_when(Gender=="Female"~1, Gender=="Male"~0, Male=case_when(Gender=="Male"~1, Gender=="Female"~0))
+head"
+> dt
+    Season Month Date Temperature
+1   Winter   Jan    1         2.3
+2   Winter   Jan    2         2.2
+3   Winter   Jan    3         2.4
+4   Winter   Jan    4         2.8
+5   Winter   Jan    5         2.5
+6   Winter   Jan    6         2.4
+7   Winter   Jan    7         2.8
+8   Winter   Jan    8         3.0
+9   Winter   Jan    9         2.4
+10  Winter   Jan   10         2.9
+11  Winter   Jan   11         2.4
+12  Winter   Jan   12         2.5
+13  Winter   Jan   13         2.6
+14  Winter   Jan   14         2.9
+15  Winter   Jan   15         3.4
+16  Winter   Jan   16         3.9
+17  Winter   Jan   17         3.3
+18  Winter   Jan   18         3.3
+19  Winter   Jan   19         2.8
+20  Winter   Jan   20         2.4
+21  Winter   Jan   21         2.7
+22  Winter   Jan   22         2.8
+23  Winter   Jan   23         2.7
+24  Winter   Jan   24         2.4
+25  Winter   Jan   25         3.5
+26  Winter   Jan   26         3.8
+27  Winter   Jan   27         2.6
+28  Winter   Jan   28         2.8
+29  Winter   Jan   29         3.1
+30  Winter   Jan   30         2.5
+31  Winter   Jan   31         2.4
+32  Summer   Feb    1         3.1
+33  Summer   Feb    2         3.3
+34  Summer   Feb    3         3.0
+35  Summer   Feb    4         3.9
+36  Summer   Feb    5         3.3
+37  Summer   Feb    6         3.1
+38  Summer   Feb    7         2.9
+39  Summer   Feb    8         2.9
+40  Summer   Feb    9         3.4
+41  Summer   Feb   10         3.0
+42  Summer   Feb   11         3.5
+43  Summer   Feb   12         3.2
+44  Summer   Feb   13         3.2
+45  Summer   Feb   14         3.7
+46  Summer   Feb   15         3.7
+47  Summer   Feb   16         3.4
+48  Summer   Feb   17         3.2
+49  Summer   Feb   18         2.6
+50  Summer   Feb   19         2.8
+51  Summer   Feb   20         3.1
+52  Summer   Feb   21         3.7
+53  Summer   Feb   22         3.5
+54  Summer   Feb   23         3.3
+55  Summer   Feb   24         3.2
+56  Summer   Feb   25         2.8
+57  Summer   Feb   26         2.9
+58  Summer   Feb   27         3.1
+59  Summer   Feb   28         3.0
+60  Summer   Mar    1         3.2
+61  Summer   Mar    2         2.7
+62  Summer   Mar    3         2.9
+63  Summer   Mar    4         3.6
+64  Summer   Mar    5         3.3
+65  Summer   Mar    6         3.2
+66  Summer   Mar    7         2.7
+67  Summer   Mar    8         3.0
+68  Summer   Mar    9         3.2
+69  Summer   Mar   10         2.6
+70  Summer   Mar   11         3.7
+71  Summer   Mar   12         3.1
+72  Summer   Mar   13         3.2
+73  Summer   Mar   14         3.0
+74  Summer   Mar   15         3.2
+75  Summer   Mar   16         2.7
+76  Summer   Mar   17         2.7
+77  Summer   Mar   18         2.9
+78  Summer   Mar   19         3.1
+79  Summer   Mar   20         3.3
+80  Summer   Mar   21         3.4
+81  Summer   Mar   22         2.5
+82  Summer   Mar   23         2.6
+83  Summer   Mar   24         3.1
+84  Summer   Mar   25         3.3
+85  Summer   Mar   26         3.4
+86  Summer   Mar   27         2.6
+87  Summer   Mar   28         3.5
+88  Summer   Mar   29         3.8
+89  Summer   Mar   30         3.4
+90  Summer   Mar   31         3.3
+91  Summer   Apr    1         2.6
+92  Summer   Apr    2         3.4
+93  Summer   Apr    3         3.4
+94  Summer   Apr    4         3.2
+95  Summer   Apr    5         3.0
+96  Summer   Apr    6         3.2
+97  Summer   Apr    7         3.0
+98  Summer   Apr    8         3.2
+99  Summer   Apr    9         3.2
+100 Summer   Apr   10         4.0
+101 Summer   Apr   11         4.0
+102 Summer   Apr   12         2.7
+103 Summer   Apr   13         3.7
+104 Summer   Apr   14         2.9
+105 Summer   Apr   15         3.1
+106 Summer   Apr   16         3.0
+107 Summer   Apr   17         3.6
+108 Summer   Apr   18         3.5
+109 Summer   Apr   19         2.6
+110 Summer   Apr   20         3.5
+111 Summer   Apr   21         2.6
+112 Summer   Apr   22         2.7
+113 Summer   Apr   23         2.9
+114 Summer   Apr   24         3.2
+115 Summer   Apr   25         3.2
+116 Summer   Apr   26         3.4
+117 Summer   Apr   27         2.6
+118 Summer   Apr   28         2.8
+119 Summer   Apr   29         3.0
+120 Summer   Apr   30         2.5
+121 Summer   May    1         2.6
+122 Summer   May    2         3.2
+123 Summer   May    3         2.8
+124 Summer   May    4         3.6
+125 Summer   May    5         3.1
+126 Summer   May    6         3.3
+127 Summer   May    7         3.2
+128 Summer   May    8         2.6
+129 Summer   May    9         3.3
+130 Summer   May   10         3.3
+131 Summer   May   11         2.7
+132 Summer   May   12         3.4
+133 Summer   May   13         3.0
+134 Summer   May   14         2.9
+135 Summer   May   15         2.9
+136 Summer   May   16         3.2
+137 Summer   May   17         3.6
+138 Summer   May   18         2.9
+139 Summer   May   19         3.4
+140 Summer   May   20         4.0
+141 Summer   May   21         3.6
+142 Summer   May   22         3.1
+143 Summer   May   23         3.1
+144 Summer   May   24         2.9
+145 Summer   May   25         3.2
+146 Summer   May   26         2.6
+147 Summer   May   27         2.9
+148 Summer   May   28         3.7
+149 Summer   May   29         3.5
+150 Summer   May   30         3.1
+151 Summer   May   31         3.3
+152  Rainy   Jun    1         3.4
+153  Rainy   Jun    2         3.4
+154  Rainy   Jun    3         2.9
+155  Rainy   Jun    4         3.1
+156  Rainy   Jun    5         2.8
+157  Rainy   Jun    6         2.9
+158  Rainy   Jun    7         3.8
+159  Rainy   Jun    8         2.7
+160  Rainy   Jun    9         3.5
+161  Rainy   Jun   10         3.5
+162  Rainy   Jun   11         2.8
+163  Rainy   Jun   12         2.9
+164  Rainy   Jun   13         3.0
+165  Rainy   Jun   14         2.7
+166  Rainy   Jun   15         2.6
+167  Rainy   Jun   16         2.5
+168  Rainy   Jun   17         2.3
+169  Rainy   Jun   18         2.7
+170  Rainy   Jun   19         3.9
+171  Rainy   Jun   20         2.8
+172  Rainy   Jun   21         3.1
+173  Rainy   Jun   22         3.3
+174  Rainy   Jun   23         2.1
+175  Rainy   Jun   24         2.8
+176  Rainy   Jun   25         3.6
+177  Rainy   Jun   26         3.3
+178  Rainy   Jun   27         3.0
+179  Rainy   Jun   28         3.8
+180  Rainy   Jun   29         2.9
+181  Rainy   Jun   30         2.7
+182  Rainy   Jul    1         3.1
+183  Rainy   Jul    2         2.7
+184  Rainy   Jul    3         2.5
+185  Rainy   Jul    4         2.7
+186  Rainy   Jul    5         3.4
+187  Rainy   Jul    6         2.5
+188  Rainy   Jul    7         2.9
+189  Rainy   Jul    8         2.8
+190  Rainy   Jul    9         3.7
+191  Rainy   Jul   10         4.2
+192  Rainy   Jul   11         3.2
+193  Rainy   Jul   12         2.9
+194  Rainy   Jul   13         3.9
+195  Rainy   Jul   14         3.3
+196  Rainy   Jul   15         3.3
+197  Rainy   Jul   16         3.2
+198  Rainy   Jul   17         3.5
+199  Rainy   Jul   18         2.8
+200  Rainy   Jul   19         3.0
+201  Rainy   Jul   20         2.7
+202  Rainy   Jul   21         2.9
+203  Rainy   Jul   22         2.5
+204  Rainy   Jul   23         1.9
+205  Rainy   Jul   24         3.2
+206  Rainy   Jul   25         3.1
+207  Rainy   Jul   26         2.3
+208  Rainy   Jul   27         2.5
+209  Rainy   Jul   28         3.8
+210  Rainy   Jul   29         3.2
+211  Rainy   Jul   30         2.8
+212  Rainy   Jul   31         3.1
+213  Rainy   Aug    1         3.4
+214  Rainy   Aug    2         3.3
+215  Rainy   Aug    3         3.4
+216  Rainy   Aug    4         3.6
+217  Rainy   Aug    5         2.9
+218  Rainy   Aug    6         3.2
+219  Rainy   Aug    7         2.7
+220  Rainy   Aug    8         2.4
+221  Rainy   Aug    9         3.0
+222  Rainy   Aug   10         2.3
+223  Rainy   Aug   11         3.5
+224  Rainy   Aug   12         2.9
+225  Rainy   Aug   13         3.7
+226  Rainy   Aug   14         3.4
+227  Rainy   Aug   15         3.8
+228  Rainy   Aug   16         2.4
+229  Rainy   Aug   17         2.8
+230  Rainy   Aug   18         3.1
+231  Rainy   Aug   19         3.0
+232  Rainy   Aug   20         2.9
+233  Rainy   Aug   21         3.4
+234  Rainy   Aug   22         4.3
+235  Rainy   Aug   23         2.5
+236  Rainy   Aug   24         3.0
+237  Rainy   Aug   25         2.8
+238  Rainy   Aug   26         2.5
+239  Rainy   Aug   27         2.7
+240  Rainy   Aug   28         2.3
+241  Rainy   Aug   29         2.5
+242  Rainy   Aug   30         3.3
+243  Rainy   Aug   31         3.9
+244  Rainy   Sep    1         3.1
+245  Rainy   Sep    2         4.1
+246  Rainy   Sep    3         2.8
+247  Rainy   Sep    4         3.2
+248  Rainy   Sep    5         3.1
+249  Rainy   Sep    6         4.1
+250  Rainy   Sep    7         3.2
+251  Rainy   Sep    8         4.1
+252  Rainy   Sep    9         4.5
+253  Rainy   Sep   10         2.9
+254  Rainy   Sep   11         2.4
+255  Rainy   Sep   12         2.7
+256  Rainy   Sep   13         2.9
+257  Rainy   Sep   14         3.2
+258  Rainy   Sep   15         2.2
+259  Rainy   Sep   16         2.7
+260  Rainy   Sep   17         3.3
+261  Rainy   Sep   18         3.5
+262  Rainy   Sep   19         3.1
+263  Rainy   Sep   20         4.4
+264  Rainy   Sep   21         3.0
+265  Rainy   Sep   22         3.3
+266  Rainy   Sep   23         3.6
+267  Rainy   Sep   24         3.5
+268  Rainy   Sep   25         3.8
+269  Rainy   Sep   26         3.9
+270  Rainy   Sep   27         3.3
+271  Rainy   Sep   28         3.2
+272  Rainy   Sep   29         1.7
+273  Rainy   Sep   30         2.6
+274 Winter   Oct    1         2.9
+275 Winter   Oct    2         2.7
+276 Winter   Oct    3         2.8
+277 Winter   Oct    4         2.4
+278 Winter   Oct    5         2.7
+279 Winter   Oct    6         3.0
+280 Winter   Oct    7         2.3
+281 Winter   Oct    8         3.5
+282 Winter   Oct    9         2.5
+283 Winter   Oct   10         2.6
+284 Winter   Oct   11         2.9
+285 Winter   Oct   12         3.1
+286 Winter   Oct   13         3.4
+287 Winter   Oct   14         3.1
+288 Winter   Oct   15         3.3
+289 Winter   Oct   16         2.4
+290 Winter   Oct   17         2.7
+291 Winter   Oct   18         3.0
+292 Winter   Oct   19         2.6
+293 Winter   Oct   20         2.1
+294 Winter   Oct   21         2.6
+295 Winter   Oct   22         3.0
+296 Winter   Oct   23         3.6
+297 Winter   Oct   24         2.9
+298 Winter   Oct   25         3.0
+299 Winter   Oct   26         2.8
+300 Winter   Oct   27         3.0
+301 Winter   Oct   28         3.8
+302 Winter   Oct   29         2.8
+303 Winter   Oct   30         3.1
+304 Winter   Oct   31         3.1
+305 Winter   Nov    1         3.1
+306 Winter   Nov    2         2.3
+307 Winter   Nov    3         1.8
+308 Winter   Nov    4         2.5
+309 Winter   Nov    5         2.8
+310 Winter   Nov    6         2.2
+311 Winter   Nov    7         3.0
+312 Winter   Nov    8         3.1
+313 Winter   Nov    9         2.8
+314 Winter   Nov   10         3.1
+315 Winter   Nov   11         2.4
+316 Winter   Nov   12         3.0
+317 Winter   Nov   13         2.1
+318 Winter   Nov   14         2.5
+319 Winter   Nov   15         2.6
+320 Winter   Nov   16         2.8
+321 Winter   Nov   17         3.0
+322 Winter   Nov   18         3.0
+323 Winter   Nov   19         3.1
+324 Winter   Nov   20         3.3
+325 Winter   Nov   21         2.3
+326 Winter   Nov   22         2.8
+327 Winter   Nov   23         2.2
+328 Winter   Nov   24         3.0
+329 Winter   Nov   25         2.5
+330 Winter   Nov   26         2.4
+331 Winter   Nov   27         2.3
+332 Winter   Nov   28         3.0
+333 Winter   Nov   29         2.6
+334 Winter   Nov   30         3.1
+335 Winter   Dec    1         3.3
+336 Winter   Dec    2         3.6
+337 Winter   Dec    3         2.9
+338 Winter   Dec    4         2.8
+339 Winter   Dec    5         2.1
+340 Winter   Dec    6         3.1
+341 Winter   Dec    7         3.1
+342 Winter   Dec    8         3.0
+343 Winter   Dec    9         2.2
+344 Winter   Dec   10         2.2
+345 Winter   Dec   11         2.4
+346 Winter   Dec   12         2.3
+347 Winter   Dec   13         2.0
+348 Winter   Dec   14         2.0
+349 Winter   Dec   15         3.1
+350 Winter   Dec   16         3.0
+351 Winter   Dec   17         2.5
+352 Winter   Dec   18         2.7
+353 Winter   Dec   19         2.5
+354 Winter   Dec   20         2.8
+355 Winter   Dec   21         2.6
+356 Winter   Dec   22         3.0
+357 Winter   Dec   23         3.0
+358 Winter   Dec   24         3.7
+359 Winter   Dec   25         3.2
+360 Winter   Dec   26         2.7
+361 Winter   Dec   27         2.7
+362 Winter   Dec   28         2.3
+363 Winter   Dec   29         2.6
+364 Winter   Dec   30         2.3
+365 Winter   Dec   31         2.9
+> dt
+    Season Month Date Temperature
+1   Winter   Jan    1         2.3
+2   Winter   Jan    2         2.2
+3   Winter   Jan    3         2.4
+4   Winter   Jan    4         2.8
+5   Winter   Jan    5         2.5
+6   Winter   Jan    6         2.4
+7   Winter   Jan    7         2.8
+8   Winter   Jan    8         3.0
+9   Winter   Jan    9         2.4
+10  Winter   Jan   10         2.9
+11  Winter   Jan   11         2.4
+12  Winter   Jan   12         2.5
+13  Winter   Jan   13         2.6
+14  Winter   Jan   14         2.9
+15  Winter   Jan   15         3.4
+16  Winter   Jan   16         3.9
+17  Winter   Jan   17         3.3
+18  Winter   Jan   18         3.3
+19  Winter   Jan   19         2.8
+20  Winter   Jan   20         2.4
+21  Winter   Jan   21         2.7
+22  Winter   Jan   22         2.8
+23  Winter   Jan   23         2.7
+24  Winter   Jan   24         2.4
+25  Winter   Jan   25         3.5
+26  Winter   Jan   26         3.8
+27  Winter   Jan   27         2.6
+28  Winter   Jan   28         2.8
+29  Winter   Jan   29         3.1
+30  Winter   Jan   30         2.5
+31  Winter   Jan   31         2.4
+32  Summer   Feb    1         3.1
+33  Summer   Feb    2         3.3
+34  Summer   Feb    3         3.0
+35  Summer   Feb    4         3.9
+36  Summer   Feb    5         3.3
+37  Summer   Feb    6         3.1
+38  Summer   Feb    7         2.9
+39  Summer   Feb    8         2.9
+40  Summer   Feb    9         3.4
+41  Summer   Feb   10         3.0
+42  Summer   Feb   11         3.5
+43  Summer   Feb   12         3.2
+44  Summer   Feb   13         3.2
+45  Summer   Feb   14         3.7
+46  Summer   Feb   15         3.7
+47  Summer   Feb   16         3.4
+48  Summer   Feb   17         3.2
+49  Summer   Feb   18         2.6
+50  Summer   Feb   19         2.8
+51  Summer   Feb   20         3.1
+52  Summer   Feb   21         3.7
+53  Summer   Feb   22         3.5
+54  Summer   Feb   23         3.3
+55  Summer   Feb   24         3.2
+56  Summer   Feb   25         2.8
+57  Summer   Feb   26         2.9
+58  Summer   Feb   27         3.1
+59  Summer   Feb   28         3.0
+60  Summer   Mar    1         3.2
+61  Summer   Mar    2         2.7
+62  Summer   Mar    3         2.9
+63  Summer   Mar    4         3.6
+64  Summer   Mar    5         3.3
+65  Summer   Mar    6         3.2
+66  Summer   Mar    7         2.7
+67  Summer   Mar    8         3.0
+68  Summer   Mar    9         3.2
+69  Summer   Mar   10         2.6
+70  Summer   Mar   11         3.7
+71  Summer   Mar   12         3.1
+72  Summer   Mar   13         3.2
+73  Summer   Mar   14         3.0
+74  Summer   Mar   15         3.2
+75  Summer   Mar   16         2.7
+76  Summer   Mar   17         2.7
+77  Summer   Mar   18         2.9
+78  Summer   Mar   19         3.1
+79  Summer   Mar   20         3.3
+80  Summer   Mar   21         3.4
+81  Summer   Mar   22         2.5
+82  Summer   Mar   23         2.6
+83  Summer   Mar   24         3.1
+84  Summer   Mar   25         3.3
+85  Summer   Mar   26         3.4
+86  Summer   Mar   27         2.6
+87  Summer   Mar   28         3.5
+88  Summer   Mar   29         3.8
+89  Summer   Mar   30         3.4
+90  Summer   Mar   31         3.3
+91  Summer   Apr    1         2.6
+92  Summer   Apr    2         3.4
+93  Summer   Apr    3         3.4
+94  Summer   Apr    4         3.2
+95  Summer   Apr    5         3.0
+96  Summer   Apr    6         3.2
+97  Summer   Apr    7         3.0
+98  Summer   Apr    8         3.2
+99  Summer   Apr    9         3.2
+100 Summer   Apr   10         4.0
+101 Summer   Apr   11         4.0
+102 Summer   Apr   12         2.7
+103 Summer   Apr   13         3.7
+104 Summer   Apr   14         2.9
+105 Summer   Apr   15         3.1
+106 Summer   Apr   16         3.0
+107 Summer   Apr   17         3.6
+108 Summer   Apr   18         3.5
+109 Summer   Apr   19         2.6
+110 Summer   Apr   20         3.5
+111 Summer   Apr   21         2.6
+112 Summer   Apr   22         2.7
+113 Summer   Apr   23         2.9
+114 Summer   Apr   24         3.2
+115 Summer   Apr   25         3.2
+116 Summer   Apr   26         3.4
+117 Summer   Apr   27         2.6
+118 Summer   Apr   28         2.8
+119 Summer   Apr   29         3.0
+120 Summer   Apr   30         2.5
+121 Summer   May    1         2.6
+122 Summer   May    2         3.2
+123 Summer   May    3         2.8
+124 Summer   May    4         3.6
+125 Summer   May    5         3.1
+126 Summer   May    6         3.3
+127 Summer   May    7         3.2
+128 Summer   May    8         2.6
+129 Summer   May    9         3.3
+130 Summer   May   10         3.3
+131 Summer   May   11         2.7
+132 Summer   May   12         3.4
+133 Summer   May   13         3.0
+134 Summer   May   14         2.9
+135 Summer   May   15         2.9
+136 Summer   May   16         3.2
+137 Summer   May   17         3.6
+138 Summer   May   18         2.9
+139 Summer   May   19         3.4
+140 Summer   May   20         4.0
+141 Summer   May   21         3.6
+142 Summer   May   22         3.1
+143 Summer   May   23         3.1
+144 Summer   May   24         2.9
+145 Summer   May   25         3.2
+146 Summer   May   26         2.6
+147 Summer   May   27         2.9
+148 Summer   May   28         3.7
+149 Summer   May   29         3.5
+150 Summer   May   30         3.1
+151 Summer   May   31         3.3
+152  Rainy   Jun    1         3.4
+153  Rainy   Jun    2         3.4
+154  Rainy   Jun    3         2.9
+155  Rainy   Jun    4         3.1
+156  Rainy   Jun    5         2.8
+157  Rainy   Jun    6         2.9
+158  Rainy   Jun    7         3.8
+159  Rainy   Jun    8         2.7
+160  Rainy   Jun    9         3.5
+161  Rainy   Jun   10         3.5
+162  Rainy   Jun   11         2.8
+163  Rainy   Jun   12         2.9
+164  Rainy   Jun   13         3.0
+165  Rainy   Jun   14         2.7
+166  Rainy   Jun   15         2.6
+167  Rainy   Jun   16         2.5
+168  Rainy   Jun   17         2.3
+169  Rainy   Jun   18         2.7
+170  Rainy   Jun   19         3.9
+171  Rainy   Jun   20         2.8
+172  Rainy   Jun   21         3.1
+173  Rainy   Jun   22         3.3
+174  Rainy   Jun   23         2.1
+175  Rainy   Jun   24         2.8
+176  Rainy   Jun   25         3.6
+177  Rainy   Jun   26         3.3
+178  Rainy   Jun   27         3.0
+179  Rainy   Jun   28         3.8
+180  Rainy   Jun   29         2.9
+181  Rainy   Jun   30         2.7
+182  Rainy   Jul    1         3.1
+183  Rainy   Jul    2         2.7
+184  Rainy   Jul    3         2.5
+185  Rainy   Jul    4         2.7
+186  Rainy   Jul    5         3.4
+187  Rainy   Jul    6         2.5
+188  Rainy   Jul    7         2.9
+189  Rainy   Jul    8         2.8
+190  Rainy   Jul    9         3.7
+191  Rainy   Jul   10         4.2
+192  Rainy   Jul   11         3.2
+193  Rainy   Jul   12         2.9
+194  Rainy   Jul   13         3.9
+195  Rainy   Jul   14         3.3
+196  Rainy   Jul   15         3.3
+197  Rainy   Jul   16         3.2
+198  Rainy   Jul   17         3.5
+199  Rainy   Jul   18         2.8
+200  Rainy   Jul   19         3.0
+201  Rainy   Jul   20         2.7
+202  Rainy   Jul   21         2.9
+203  Rainy   Jul   22         2.5
+204  Rainy   Jul   23         1.9
+205  Rainy   Jul   24         3.2
+206  Rainy   Jul   25         3.1
+207  Rainy   Jul   26         2.3
+208  Rainy   Jul   27         2.5
+209  Rainy   Jul   28         3.8
+210  Rainy   Jul   29         3.2
+211  Rainy   Jul   30         2.8
+212  Rainy   Jul   31         3.1
+213  Rainy   Aug    1         3.4
+214  Rainy   Aug    2         3.3
+215  Rainy   Aug    3         3.4
+216  Rainy   Aug    4         3.6
+217  Rainy   Aug    5         2.9
+218  Rainy   Aug    6         3.2
+219  Rainy   Aug    7         2.7
+220  Rainy   Aug    8         2.4
+221  Rainy   Aug    9         3.0
+222  Rainy   Aug   10         2.3
+223  Rainy   Aug   11         3.5
+224  Rainy   Aug   12         2.9
+225  Rainy   Aug   13         3.7
+226  Rainy   Aug   14         3.4
+227  Rainy   Aug   15         3.8
+228  Rainy   Aug   16         2.4
+229  Rainy   Aug   17         2.8
+230  Rainy   Aug   18         3.1
+231  Rainy   Aug   19         3.0
+232  Rainy   Aug   20         2.9
+233  Rainy   Aug   21         3.4
+234  Rainy   Aug   22         4.3
+235  Rainy   Aug   23         2.5
+236  Rainy   Aug   24         3.0
+237  Rainy   Aug   25         2.8
+238  Rainy   Aug   26         2.5
+239  Rainy   Aug   27         2.7
+240  Rainy   Aug   28         2.3
+241  Rainy   Aug   29         2.5
+242  Rainy   Aug   30         3.3
+243  Rainy   Aug   31         3.9
+244  Rainy   Sep    1         3.1
+245  Rainy   Sep    2         4.1
+246  Rainy   Sep    3         2.8
+247  Rainy   Sep    4         3.2
+248  Rainy   Sep    5         3.1
+249  Rainy   Sep    6         4.1
+250  Rainy   Sep    7         3.2
+251  Rainy   Sep    8         4.1
+252  Rainy   Sep    9         4.5
+253  Rainy   Sep   10         2.9
+254  Rainy   Sep   11         2.4
+255  Rainy   Sep   12         2.7
+256  Rainy   Sep   13         2.9
+257  Rainy   Sep   14         3.2
+258  Rainy   Sep   15         2.2
+259  Rainy   Sep   16         2.7
+260  Rainy   Sep   17         3.3
+261  Rainy   Sep   18         3.5
+262  Rainy   Sep   19         3.1
+263  Rainy   Sep   20         4.4
+264  Rainy   Sep   21         3.0
+265  Rainy   Sep   22         3.3
+266  Rainy   Sep   23         3.6
+267  Rainy   Sep   24         3.5
+268  Rainy   Sep   25         3.8
+269  Rainy   Sep   26         3.9
+270  Rainy   Sep   27         3.3
+271  Rainy   Sep   28         3.2
+272  Rainy   Sep   29         1.7
+273  Rainy   Sep   30         2.6
+274 Winter   Oct    1         2.9
+275 Winter   Oct    2         2.7
+276 Winter   Oct    3         2.8
+277 Winter   Oct    4         2.4
+278 Winter   Oct    5         2.7
+279 Winter   Oct    6         3.0
+280 Winter   Oct    7         2.3
+281 Winter   Oct    8         3.5
+282 Winter   Oct    9         2.5
+283 Winter   Oct   10         2.6
+284 Winter   Oct   11         2.9
+285 Winter   Oct   12         3.1
+286 Winter   Oct   13         3.4
+287 Winter   Oct   14         3.1
+288 Winter   Oct   15         3.3
+289 Winter   Oct   16         2.4
+290 Winter   Oct   17         2.7
+291 Winter   Oct   18         3.0
+292 Winter   Oct   19         2.6
+293 Winter   Oct   20         2.1
+294 Winter   Oct   21         2.6
+295 Winter   Oct   22         3.0
+296 Winter   Oct   23         3.6
+297 Winter   Oct   24         2.9
+298 Winter   Oct   25         3.0
+299 Winter   Oct   26         2.8
+300 Winter   Oct   27         3.0
+301 Winter   Oct   28         3.8
+302 Winter   Oct   29         2.8
+303 Winter   Oct   30         3.1
+304 Winter   Oct   31         3.1
+305 Winter   Nov    1         3.1
+306 Winter   Nov    2         2.3
+307 Winter   Nov    3         1.8
+308 Winter   Nov    4         2.5
+309 Winter   Nov    5         2.8
+310 Winter   Nov    6         2.2
+311 Winter   Nov    7         3.0
+312 Winter   Nov    8         3.1
+313 Winter   Nov    9         2.8
+314 Winter   Nov   10         3.1
+315 Winter   Nov   11         2.4
+316 Winter   Nov   12         3.0
+317 Winter   Nov   13         2.1
+318 Winter   Nov   14         2.5
+319 Winter   Nov   15         2.6
+320 Winter   Nov   16         2.8
+321 Winter   Nov   17         3.0
+322 Winter   Nov   18         3.0
+323 Winter   Nov   19         3.1
+324 Winter   Nov   20         3.3
+325 Winter   Nov   21         2.3
+326 Winter   Nov   22         2.8
+327 Winter   Nov   23         2.2
+328 Winter   Nov   24         3.0
+329 Winter   Nov   25         2.5
+330 Winter   Nov   26         2.4
+331 Winter   Nov   27         2.3
+332 Winter   Nov   28         3.0
+333 Winter   Nov   29         2.6
+334 Winter   Nov   30         3.1
+335 Winter   Dec    1         3.3
+336 Winter   Dec    2         3.6
+337 Winter   Dec    3         2.9
+338 Winter   Dec    4         2.8
+339 Winter   Dec    5         2.1
+340 Winter   Dec    6         3.1
+341 Winter   Dec    7         3.1
+342 Winter   Dec    8         3.0
+343 Winter   Dec    9         2.2
+344 Winter   Dec   10         2.2
+345 Winter   Dec   11         2.4
+346 Winter   Dec   12         2.3
+347 Winter   Dec   13         2.0
+348 Winter   Dec   14         2.0
+349 Winter   Dec   15         3.1
+350 Winter   Dec   16         3.0
+351 Winter   Dec   17         2.5
+352 Winter   Dec   18         2.7
+353 Winter   Dec   19         2.5
+354 Winter   Dec   20         2.8
+355 Winter   Dec   21         2.6
+356 Winter   Dec   22         3.0
+357 Winter   Dec   23         3.0
+358 Winter   Dec   24         3.7
+359 Winter   Dec   25         3.2
+360 Winter   Dec   26         2.7
+361 Winter   Dec   27         2.7
+362 Winter   Dec   28         2.3
+363 Winter   Dec   29         2.6
+364 Winter   Dec   30         2.3
+365 Winter   Dec   31         2.9
+> head(dt)
+  Season Month Date Temperature
+1 Winter   Jan    1         2.3
+2 Winter   Jan    2         2.2
+3 Winter   Jan    3         2.4
+4 Winter   Jan    4         2.8
+5 Winter   Jan    5         2.5
+6 Winter   Jan    6         2.4
+> attach(cold)
+> cold
+    Product Age Gender Education MaritalStatus Usage Fitness Income Miles
+1     TM195  18   Male        14        Single     3       4  29562   112
+2     TM195  19   Male        15        Single     2       3  31836    75
+3     TM195  19 Female        14     Partnered     4       3  30699    66
+4     TM195  19   Male        12        Single     3       3  32973    85
+5     TM195  20   Male        13     Partnered     4       2  35247    47
+6     TM195  20 Female        14     Partnered     3       3  32973    66
+7     TM195  21 Female        14     Partnered     3       3  35247    75
+8     TM195  21   Male        13        Single     3       3  32973    85
+9     TM195  21   Male        15        Single     5       4  35247   141
+10    TM195  21 Female        15     Partnered     2       3  37521    85
+11    TM195  22   Male        14        Single     3       3  36384    85
+12    TM195  22 Female        14     Partnered     3       2  35247    66
+13    TM195  22 Female        16        Single     4       3  36384    75
+14    TM195  22 Female        14        Single     3       3  35247    75
+15    TM195  23   Male        16     Partnered     3       1  38658    47
+16    TM195  23   Male        16     Partnered     3       3  40932    75
+17    TM195  23 Female        14        Single     2       3  34110   103
+18    TM195  23   Male        16     Partnered     4       3  39795    94
+19    TM195  23 Female        16        Single     4       3  38658   113
+20    TM195  23 Female        15     Partnered     2       2  34110    38
+21    TM195  23   Male        14        Single     4       3  38658   113
+22    TM195  23   Male        16        Single     4       3  40932    94
+23    TM195  24 Female        16        Single     4       3  42069    94
+24    TM195  24 Female        16     Partnered     5       5  44343   188
+25    TM195  24   Male        14        Single     2       3  45480   113
+26    TM195  24   Male        13     Partnered     3       2  42069    47
+27    TM195  24 Female        16        Single     4       3  46617    75
+28    TM195  25 Female        14     Partnered     3       3  48891    75
+29    TM195  25   Male        14     Partnered     2       3  45480    56
+30    TM195  25 Female        14     Partnered     2       2  53439    47
+31    TM195  25 Female        14     Partnered     3       3  39795    85
+32    TM195  25   Male        16        Single     3       4  40932   113
+33    TM195  25 Female        16     Partnered     2       2  40932    47
+34    TM195  25   Male        16        Single     3       3  43206    85
+35    TM195  26 Female        14     Partnered     3       4  44343   113
+36    TM195  26 Female        16     Partnered     4       3  52302   113
+37    TM195  26   Male        16     Partnered     2       2  53439    47
+38    TM195  26   Male        16     Partnered     3       3  51165    85
+39    TM195  26 Female        16        Single     3       3  36384    66
+40    TM195  26   Male        16     Partnered     4       4  44343   132
+41    TM195  26   Male        16        Single     3       3  50028    85
+42    TM195  27 Female        14     Partnered     3       2  45480    66
+43    TM195  27   Male        16        Single     4       3  54576    85
+44    TM195  27 Female        14     Partnered     2       3  45480    56
+45    TM195  28 Female        14     Partnered     2       3  46617    56
+46    TM195  28 Female        16     Partnered     2       3  52302    66
+47    TM195  28   Male        14        Single     3       3  52302   103
+48    TM195  28 Female        14     Partnered     3       3  54576    94
+49    TM195  28   Male        14        Single     4       3  54576   113
+50    TM195  28 Female        16     Partnered     3       3  51165    56
+51    TM195  29   Male        18     Partnered     3       3  68220    85
+52    TM195  29 Female        14     Partnered     2       2  46617    38
+53    TM195  29 Female        16     Partnered     4       3  50028    94
+54    TM195  30   Male        14     Partnered     4       4  46617   141
+55    TM195  30   Male        14        Single     3       3  54576    85
+56    TM195  31   Male        14     Partnered     2       2  54576    47
+57    TM195  31 Female        14        Single     2       2  45480    47
+58    TM195  32 Female        14        Single     3       4  46617   113
+59    TM195  32   Male        14     Partnered     4       3  52302    85
+60    TM195  33 Female        16        Single     2       2  55713    38
+61    TM195  33 Female        16     Partnered     3       3  46617    85
+62    TM195  34   Male        16        Single     4       5  51165   169
+63    TM195  34 Female        16        Single     2       2  52302    66
+64    TM195  35   Male        16     Partnered     4       3  48891    85
+65    TM195  35 Female        16     Partnered     3       3  60261    94
+66    TM195  35 Female        18        Single     3       3  67083    85
+67    TM195  36   Male        12        Single     4       3  44343    94
+68    TM195  37 Female        16     Partnered     3       3  37521    85
+69    TM195  38   Male        16     Partnered     3       3  46617    75
+70    TM195  38 Female        14     Partnered     2       3  54576    56
+71    TM195  38   Male        14        Single     2       3  52302    56
+72    TM195  38   Male        16     Partnered     3       3  56850    75
+73    TM195  39   Male        16     Partnered     4       4  59124   132
+74    TM195  40   Male        16     Partnered     3       3  61398    66
+75    TM195  41   Male        16     Partnered     4       3  54576   103
+76    TM195  43   Male        16     Partnered     3       3  53439    66
+77    TM195  44 Female        16        Single     3       4  57987    75
+78    TM195  46 Female        16     Partnered     3       2  60261    47
+79    TM195  47   Male        16     Partnered     4       3  56850    94
+80    TM195  50 Female        16     Partnered     3       3  64809    66
+81    TM498  19   Male        14        Single     3       3  31836    64
+82    TM498  20   Male        14        Single     2       3  32973    53
+83    TM498  20 Female        14     Partnered     3       3  34110   106
+84    TM498  20   Male        14        Single     3       3  38658    95
+85    TM498  21 Female        14     Partnered     5       4  34110   212
+86    TM498  21   Male        16     Partnered     2       2  34110    42
+87    TM498  21   Male        12     Partnered     2       2  32973    53
+88    TM498  23   Male        14     Partnered     3       3  36384    95
+89    TM498  23   Male        14     Partnered     3       3  38658    85
+90    TM498  23 Female        16        Single     3       3  45480    95
+91    TM498  23   Male        16     Partnered     4       3  45480   127
+92    TM498  23 Female        16     Partnered     3       2  43206    74
+93    TM498  23 Female        14        Single     3       2  40932    53
+94    TM498  23   Male        16     Partnered     3       3  45480    64
+95    TM498  24 Female        14        Single     3       2  40932    85
+96    TM498  24   Male        14        Single     3       4  48891   106
+97    TM498  24 Female        16        Single     3       3  50028   106
+98    TM498  25 Female        14     Partnered     2       3  45480    85
+99    TM498  25 Female        14        Single     3       4  43206   127
+100   TM498  25   Male        16     Partnered     2       2  52302    42
+101   TM498  25 Female        14     Partnered     5       3  47754   106
+102   TM498  25   Male        14        Single     3       3  45480    95
+103   TM498  25 Female        14        Single     2       3  43206    64
+104   TM498  25   Male        14     Partnered     4       3  45480   170
+105   TM498  25   Male        14     Partnered     3       4  43206   106
+106   TM498  25   Male        16     Partnered     2       3  50028    53
+107   TM498  25 Female        14        Single     2       2  45480    42
+108   TM498  25   Male        14        Single     4       3  48891   127
+109   TM498  26 Female        16     Partnered     4       3  45480    85
+110   TM498  26 Female        16        Single     4       4  50028   127
+111   TM498  26   Male        16        Single     4       3  51165   106
+112   TM498  27   Male        14        Single     4       2  45480    53
+113   TM498  29 Female        14     Partnered     3       3  51165    95
+114   TM498  30 Female        14        Single     3       3  57987    74
+115   TM498  30 Female        13        Single     4       3  46617   106
+116   TM498  31   Male        16     Partnered     3       3  52302    95
+117   TM498  31 Female        16     Partnered     2       3  51165    64
+118   TM498  31 Female        18        Single     2       1  65220    21
+119   TM498  32   Male        16        Single     4       3  60261   127
+120   TM498  32   Male        16     Partnered     3       3  53439    95
+121   TM498  33   Male        13     Partnered     4       4  53439   170
+122   TM498  33 Female        16     Partnered     2       3  50028    85
+123   TM498  33   Male        16     Partnered     3       3  51165    95
+124   TM498  33 Female        16     Partnered     5       3  53439    95
+125   TM498  33 Female        18        Single     3       4  47754    74
+126   TM498  34 Female        16     Partnered     4       3  64809    95
+127   TM498  34   Male        16     Partnered     3       4  59124    85
+128   TM498  34   Male        15        Single     3       3  67083    85
+129   TM498  35 Female        14     Partnered     3       2  52302    53
+130   TM498  35   Male        16     Partnered     3       2  53439    53
+131   TM498  35 Female        16        Single     3       2  50028    64
+132   TM498  35   Male        16     Partnered     3       3  53439    95
+133   TM498  37 Female        16     Partnered     2       3  48891    85
+134   TM498  38 Female        16     Partnered     4       3  62535    85
+135   TM498  38   Male        16     Partnered     3       3  59124   106
+136   TM498  40 Female        16     Partnered     3       3  61398    85
+137   TM498  40 Female        16        Single     3       3  57987    85
+138   TM498  40   Male        16     Partnered     3       3  64809    95
+139   TM498  45   Male        16     Partnered     2       2  54576    42
+140   TM498  48   Male        16     Partnered     2       3  57987    64
+141   TM798  22   Male        14        Single     4       3  48658   106
+142   TM798  22   Male        16        Single     3       5  54781   120
+143   TM798  22   Male        18        Single     4       5  48556   200
+144   TM798  23   Male        16        Single     4       5  58516   140
+145   TM798  23 Female        18        Single     5       4  53536   100
+146   TM798  23   Male        16        Single     4       5  48556   100
+147   TM798  24   Male        16        Single     4       5  61006   100
+148   TM798  24   Male        18     Partnered     4       5  57271    80
+149   TM798  24 Female        16        Single     5       5  52291   200
+150   TM798  24   Male        16        Single     5       5  49801   160
+151   TM798  25   Male        16     Partnered     4       5  49801   120
+152   TM798  25   Male        16     Partnered     4       4  62251   160
+153   TM798  25 Female        18     Partnered     5       5  61006   200
+154   TM798  25   Male        18     Partnered     4       3  64741   100
+155   TM798  25   Male        18     Partnered     6       4  70966   180
+156   TM798  25   Male        18     Partnered     6       5  75946   240
+157   TM798  25   Male        20     Partnered     4       5  74701   170
+158   TM798  26 Female        21        Single     4       3  69721   100
+159   TM798  26   Male        16     Partnered     5       4  64741   180
+160   TM798  27   Male        16     Partnered     4       5  83416   160
+161   TM798  27   Male        18        Single     4       3  88396   100
+162   TM798  27   Male        21     Partnered     4       4  90886   100
+163   TM798  28 Female        18     Partnered     6       5  92131   180
+164   TM798  28   Male        18     Partnered     7       5  77191   180
+165   TM798  28   Male        18        Single     6       5  88396   150
+166   TM798  29   Male        18        Single     5       5  52290   180
+167   TM798  29   Male        14     Partnered     7       5  85906   300
+168   TM798  30 Female        16     Partnered     6       5  90886   280
+169   TM798  30   Male        18     Partnered     5       4 103336   160
+170   TM798  30   Male        18     Partnered     5       5  99601   150
+171   TM798  31   Male        16     Partnered     6       5  89641   260
+172   TM798  33 Female        18     Partnered     4       5  95866   200
+173   TM798  34   Male        16        Single     5       5  92131   150
+174   TM798  35   Male        16     Partnered     4       5  92131   360
+175   TM798  38   Male        18     Partnered     5       5 104581   150
+176   TM798  40   Male        21        Single     6       5  83416   200
+177   TM798  42   Male        18        Single     5       4  89641   200
+178   TM798  45   Male        16        Single     5       5  90886   160
+179   TM798  47   Male        18     Partnered     4       5 104581   120
+180   TM798  48   Male        18     Partnered     4       5  95508   180
+> newerCold <- cold%>%mutate(Female=case_when(Gender=="Female"~1, Gender=="Male"~0, Male=case_when(Gender=="Male"~1, Gender=="Female"~0))
++ 
+
+
++ > > 
+> newerCold <- cold%>%mutate(Female=case_when(Gender=="Female"~1, Gender=="Male"~0, Male=case_when(Gender=="Male"~1, Gender=="Female"~0))
++ )
+Error: Problem with `mutate()` input `Female`.
+x Case 3 (`Gender == "Female" ~ 1`) must be a two-sided formula, not a double vector.
+i Input `Female` is `case_when(...)`.
+Run `rlang::last_error()` to see where the error occurred.
+> 
+
+> > 
+> # The dummy variable did not work o. Check the one from the ISLR Chapter three exercise

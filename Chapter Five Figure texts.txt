@@ -1,0 +1,22 @@
+3. We now review k-fold cross-validation.
+	(a) Explain how k-fold cross-validation is implemented.
+	(b) What are the advantages and disadvantages of k-fold crossvalidation relative to:
+		i. The validation set approach?
+		ii. LOOCV?
+
+The body of data is split into k folds of approximately equal size. The first fold is treated as the validation set and the model is fit on the remaining k-1 folds. 
+Mean Squared Error is computed for each of the fold held out (or used as the validation fold)
+This process is repeated for the remaining k-1 group, thus repeating it k times, which another fold left out. The the K MSE results are averaged to estimate the test error
+
+b.	What are the advantages and disadvantages of k-fold cross-validation relative to:
+The validation set approach?
+the validation set approach can overestimate the test error since model just uses half of the available oberservations
+the validation set approach is highly variable in estamting the test error depending on which oberservations are in which set
+
+LOOCV?
+LOOCV is computaionally more expensive because the model is fit k=n times
+LOOCV has low bias but high variance k-fold with k=5 or k=10 has been shown empirically to yield the best results
+
+4. Suppose that we use some statistical learning method to make a prediction for the response Y for a particular value of the predictor X. Carefully describe how we might estimate the standard deviation of our prediction.
+We can estimate the standard deviation of our prediction by using the bootstrap method. Since we often don’t have access to new data sets from the population we instead use repeated samples with replacement from the one data set available. With different results for the Y value we can estimate the standard deviation of our prediction.
+

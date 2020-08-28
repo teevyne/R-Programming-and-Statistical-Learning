@@ -1,0 +1,48 @@
+PRODUCTS
+
+1.	Transactional Data
+	The /transactions/get endpoint provides standardized transactions for credit and deposit accounts from thousands of financial institutions.
+Continuous stream of transaction updates
+Stay up-to-date by receiving notifications via a webhook whenever there are new transactions associated with linked accounts
+
+Benefit - Transaction history can be used to support solutions like the budgeting app
+
+2.	Instantly authenticate bank accounts for payments
+Instant account authentication
+Once a user connects their account using bank credentials, the /auth/get endpoint enables you to retrieve the bank account and routing numbers, along with high-level account data and balances when available.
+Set up frictionless payments
+Plaid works with any ACH processor, including Stripe and Dwolla
+
+3.	Verify real-time account balances
+	Real-time Balance data
+The /accounts/balance/get endpoint returns the real-time balance for linked accounts
+
+4.	Build a holistic view of a user’s investments
+	Retrieve Investment Holdings data
+The /investments/holdings/get endpoint returns a detailed breakdown of an account’s holdings, including quantity, price, total value, ticker, and common name
+Retrieve Investment Transactions data
+The /investments/transactions/get endpoint returns details on transactions that create a change in one or more holdings in a portfolio, such as buys, sells, splits, or dividends. Cash transfers in and out of an investment account are also returned.... check Haven
+
+5.	Asset - Verify borrowers’ assets straight from the source
+Asset data
+The /asset_report/get or /asset_report/pdf/get endpoints allow you to retrieve a consolidated summary of account balances and transactions in JSON or PDF formats
+Consumer transparency and control
+Users can review their financial data before choosing to share it with developers, lenders and other third parties
+
+
+
+			FOR THE INDIVIDUAL
+What is Plaid?
+Plaid makes it easy to securely connect your bank to the apps you want to use
+
+Connecting your bank to your apps
+We power thousands of the apps that people rely on to manage their financial lives.
+
+Venmo (peer-to-peer payments)
+Betterment (automated investing)
+Chime (online banking)
+Dave (earned wage access)
+And thousands more...
+
+Get more answers from here about plaid 
+https://plaid.com/what-is-plaid/

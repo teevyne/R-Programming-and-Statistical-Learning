@@ -11,5 +11,5 @@ NeedsCompilation: yes
 Packaged: 2020-01-15 22:46:02 UTC; tlum005
 Repository: CRAN
 Date/Publication: 2020-01-16 17:50:05 UTC
-Built: R 4.0.2; x86_64-w64-mingw32; 2020-08-06 15:09:16 UTC; windows
+Built: R 4.0.2; x86_64-w64-mingw32; 2020-08-24 03:12:18 UTC; windows
 Archs: i386, x64
